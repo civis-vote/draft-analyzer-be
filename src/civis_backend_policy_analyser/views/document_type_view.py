@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.document_type import DocumentType
 from civis_backend_policy_analyser.schemas.document_type_schema import (
@@ -7,88 +8,126 @@ from civis_backend_policy_analyser.schemas.document_type_schema import (
     DocumentTypeOut,
 )
 from civis_backend_policy_analyser.views.base_view import BaseView
-import logging
-from sqlalchemy.orm import selectinload
-
-logger = logging.getLogger(__name__)
+from loguru import logger
 
 
 class DocumentTypeView(BaseView):
     """
-    This view controller manages access to the all type of documents.
+    View controller to manage Document Types such as policy documents,
+    consultation documents, legal drafts, etc.
 
-    E.g.
-        ```
-        - policy document
-        - consulation document
-        - law document etc.
-        ```
+    Business Rules:
+    - Document types can be associated with multiple assessment areas.
+    - The relationship is many-to-many and must be updated explicitly.
     """
 
     model = DocumentType
     schema = DocumentTypeOut
 
     async def all_document_types(self):
-        all_records = (
-            await self.db_session.execute(
+        """
+        Fetch all document types along with their associated assessment areas.
+
+        Returns:
+            List[DocumentTypeOut]: Serialized document types with related assessment IDs.
+
+        Business Logic:
+        - Eagerly loads associated assessment areas to avoid async lazy-loading issues.
+        """
+        try:
+            result = await self.db_session.execute(
                 select(self.model).options(selectinload(self.model.assessment_areas))
             )
-        ).scalars().all()
-
-        return [self.schema.from_orm(record) for record in all_records]
+            all_records = result.scalars().all()
+            return [self.schema.from_orm(record) for record in all_records]
+        except Exception as e:
+            logger.error(f"Failed to fetch document types: {e}")
+            raise
 
     async def create(self, data: DocumentTypeCreate):
-        assessment_ids = data.assessment_ids or []
-        doc_data = data.model_dump(exclude={'assessment_ids'})
-        model_obj = self.model(**doc_data)
+        """
+        Create a new document type and associate it with selected assessment areas.
 
-        if assessment_ids:
-            assessment_objs = (
-                await self.db_session.execute(
-                    select(AssessmentArea).where(AssessmentArea.assessment_id.in_(assessment_ids))
-                )
-            ).scalars().all()
-            model_obj.assessment_areas = assessment_objs
+        Args:
+            data (DocumentTypeCreate): Input data including assessment IDs.
 
-        self.db_session.add(model_obj)
-        await self.db_session.commit()
-        await self.db_session.refresh(model_obj)
+        Returns:
+            DocumentTypeOut: The created document type with associations.
 
-        # Now returns DocumentTypeOut with assessment_ids property correctly serialized
-        return self.schema.from_orm(model_obj)
+        Business Logic:
+        - Validates provided assessment area IDs.
+        - Sets up many-to-many relationship manually before persisting.
+        """
+        try:
+            assessment_ids = data.assessment_ids or []
+            doc_data = data.model_dump(exclude={'assessment_ids'})
+            model_obj = self.model(**doc_data)
+
+            if assessment_ids:
+                assessment_objs = (
+                    await self.db_session.execute(
+                        select(AssessmentArea).where(AssessmentArea.assessment_id.in_(assessment_ids))
+                    )
+                ).scalars().all()
+                model_obj.assessment_areas = assessment_objs
+
+            self.db_session.add(model_obj)
+            await self.db_session.commit()
+            await self.db_session.refresh(model_obj)
+
+            return self.schema.from_orm(model_obj)
+        except Exception as e:
+            logger.error(f"Error creating DocumentType: {e}")
+            raise
 
     async def update(self, id: int, data: DocumentTypeUpdate):
-        # Fetch with relationships loaded eagerly to avoid lazy-loading later
-        result = await self.db_session.execute(
-            select(self.model)
-            .options(selectinload(self.model.assessment_areas))
-            .where(self.model.doc_type_id == id)
-        )
-        model_obj = result.scalars().first()
+        """
+        Update an existing document type and its associated assessment areas.
 
-        if not model_obj:
-            raise ValueError(f"DocumentType with id {id} not found.")
+        Args:
+            id (int): DocumentType ID to update.
+            data (DocumentTypeUpdate): Fields to update.
 
-        update_data = data.model_dump(exclude_unset=True)
-        assessment_ids = update_data.pop("assessment_ids", None)
+        Returns:
+            DocumentTypeOut: Updated document type with correct associations.
 
-        # Update regular fields
-        for key, value in update_data.items():
-            setattr(model_obj, key, value)
-
-        # Handle many-to-many relationship manually
-        if assessment_ids is not None:
-            # Fetch the AssessmentArea objects for the provided IDs
+        Business Logic:
+        - Partial updates are supported.
+        - If assessment_ids are provided, the many-to-many relationship is replaced.
+        """
+        try:
             result = await self.db_session.execute(
-                select(AssessmentArea).where(AssessmentArea.assessment_id.in_(assessment_ids))
+                select(self.model)
+                .options(selectinload(self.model.assessment_areas))
+                .where(self.model.doc_type_id == id)
             )
-            assessment_objs = result.scalars().all()
+            model_obj = result.scalars().first()
 
-            # Replace the relationship safely
-            model_obj.assessment_areas.clear()  # Remove old mappings
-            model_obj.assessment_areas.extend(assessment_objs)  # Add new mappings
+            if not model_obj:
+                msg = f"DocumentType with id {id} not found."
+                logger.warning(msg)
+                raise ValueError(msg)
 
-        await self.db_session.commit()
-        await self.db_session.refresh(model_obj)
+            update_data = data.model_dump(exclude_unset=True)
+            assessment_ids = update_data.pop("assessment_ids", None)
 
-        return self.schema.from_orm(model_obj)
+            for key, value in update_data.items():
+                setattr(model_obj, key, value)
+
+            if assessment_ids is not None:
+                result = await self.db_session.execute(
+                    select(AssessmentArea).where(AssessmentArea.assessment_id.in_(assessment_ids))
+                )
+                assessment_objs = result.scalars().all()
+
+                model_obj.assessment_areas.clear()
+                model_obj.assessment_areas.extend(assessment_objs)
+
+            await self.db_session.commit()
+            await self.db_session.refresh(model_obj)
+
+            return self.schema.from_orm(model_obj)
+
+        except Exception as e:
+            logger.error(f"Error updating DocumentType id={id}: {e}")
+            raise

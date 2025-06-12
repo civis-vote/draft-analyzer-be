@@ -1,90 +1,142 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.prompt import Prompt
-from civis_backend_policy_analyser.schemas.assessment_area_schema import AssessmentAreaCreate, AssessmentAreaOut, AssessmentAreaUpdate
+from civis_backend_policy_analyser.schemas.assessment_area_schema import (
+    AssessmentAreaCreate,
+    AssessmentAreaOut,
+    AssessmentAreaUpdate,
+)
 from civis_backend_policy_analyser.views.base_view import BaseView
-import logging
-from sqlalchemy.orm import selectinload
-
-logger = logging.getLogger(__name__)
+from loguru import logger
 
 
 class AssessmentAreaView(BaseView):
     """
-    This view controller manages access to the all type of assessment areas.
+    View controller to manage Assessment Areas, which are logical groupings used
+    to categorize and evaluate different dimensions of a document or policy.
 
-    E.g.
-        ```
-        - policy assessment area
-        - consultation assessment area
-        - law assessment area etc.
-        ```
+    Examples include:
+    - Policy assessment area
+    - Consultation assessment area
+    - Legal compliance area
+
+    Business Rules:
+    - Each assessment area may be linked to multiple prompts (questions or criteria).
+    - Prompts are managed via a many-to-many relationship.
     """
 
     model = AssessmentArea
     schema = AssessmentAreaOut
 
     async def all_assessment_areas(self):
-        all_records = (
-            await self.db_session.execute(
+        """
+        Fetch all assessment areas with their related prompts eagerly loaded.
+
+        Returns:
+            List of AssessmentAreaOut schemas, each with associated prompt_ids.
+
+        Business Logic:
+        - Uses eager loading (`selectinload`) to pre-fetch prompts and avoid
+          lazy-loading issues in async environments.
+        """
+        try:
+            result = await self.db_session.execute(
                 select(self.model).options(selectinload(self.model.prompts))
             )
-        ).scalars().all()
-        
-        return [self.schema.from_orm(record) for record in all_records]
+            all_records = result.scalars().all()
+            return [self.schema.from_orm(record) for record in all_records]
+        except Exception as e:
+            logger.error(f"Failed to fetch assessment areas: {e}")
+            raise
 
     async def create(self, data: AssessmentAreaCreate):
-        prompt_ids = data.prompt_ids or []
-        area_data = data.model_dump(exclude={'prompt_ids'})
-        model_obj = self.model(**area_data)
+        """
+        Create a new assessment area and associate it with selected prompts.
 
-        if prompt_ids:
-            prompt_objs = (
-                await self.db_session.execute(
-                    select(Prompt).where(Prompt.prompt_id.in_(prompt_ids))
-                )
-            ).scalars().all()
-            model_obj.prompts = prompt_objs
+        Args:
+            data: AssessmentAreaCreate schema with optional prompt_ids.
 
-        self.db_session.add(model_obj)
-        await self.db_session.commit()
-        await self.db_session.refresh(model_obj)
+        Returns:
+            AssessmentAreaOut schema with prompt_ids populated.
 
-        # Now returns AssessmentAreaOut with prompt_ids property correctly serialized
-        return self.schema.from_orm(model_obj)
+        Business Logic:
+        - Accepts a list of prompt IDs to associate.
+        - Ensures referential integrity by querying Prompt model before assigning.
+        """
+        try:
+            prompt_ids = data.prompt_ids or []
+            area_data = data.model_dump(exclude={'prompt_ids'})
+            model_obj = self.model(**area_data)
+
+            if prompt_ids:
+                prompt_objs = (
+                    await self.db_session.execute(
+                        select(Prompt).where(Prompt.prompt_id.in_(prompt_ids))
+                    )
+                ).scalars().all()
+                model_obj.prompts = prompt_objs
+
+            self.db_session.add(model_obj)
+            await self.db_session.commit()
+            await self.db_session.refresh(model_obj)
+
+            return self.schema.from_orm(model_obj)
+
+        except Exception as e:
+            logger.error(f"Error creating AssessmentArea: {e}")
+            raise
 
     async def update(self, id: int, data: AssessmentAreaUpdate):
-        # Fetch with relationships loaded eagerly to avoid lazy-loading later
-        result = await self.db_session.execute(
-            select(self.model)
-            .options(selectinload(self.model.prompts))
-            .where(self.model.assessment_id == id)
-        )
-        model_obj = result.scalars().first()
+        """
+        Update an existing assessment area and its associated prompts.
 
-        if not model_obj:
-            raise ValueError(f"AssessmentArea with id {id} not found.")
+        Args:
+            id: ID of the assessment area to update.
+            data: AssessmentAreaUpdate schema, may include updated prompt_ids.
 
-        update_data = data.model_dump(exclude_unset=True)
-        prompt_ids = update_data.pop("prompt_ids", None)
+        Returns:
+            AssessmentAreaOut schema reflecting updated state.
 
-        # Update regular fields
-        for key, value in update_data.items():
-            setattr(model_obj, key, value)
-
-        # Handle many-to-many relationship manually
-        if prompt_ids is not None:
-            # Fetch the Prompt objects for the provided IDs
+        Business Logic:
+        - Supports partial updates via `exclude_unset=True`.
+        - If prompt_ids are provided, replaces existing associations.
+        - Validates existence of related Prompt objects before linking.
+        """
+        try:
             result = await self.db_session.execute(
-                select(Prompt).where(Prompt.prompt_id.in_(prompt_ids))
+                select(self.model)
+                .options(selectinload(self.model.prompts))
+                .where(self.model.assessment_id == id)
             )
-            prompt_objs = result.scalars().all()
+            model_obj = result.scalars().first()
 
-            # Replace the relationship safely
-            model_obj.prompts.clear()  # Remove old mappings
-            model_obj.prompts.extend(prompt_objs)  # Add new mappings
+            if not model_obj:
+                msg = f"AssessmentArea with id {id} not found."
+                logger.warning(msg)
+                raise ValueError(msg)
 
-        await self.db_session.commit()
-        await self.db_session.refresh(model_obj)
+            update_data = data.model_dump(exclude_unset=True)
+            prompt_ids = update_data.pop("prompt_ids", None)
 
-        return self.schema.from_orm(model_obj)
+            for key, value in update_data.items():
+                setattr(model_obj, key, value)
+
+            if prompt_ids is not None:
+                prompt_objs = (
+                    await self.db_session.execute(
+                        select(Prompt).where(Prompt.prompt_id.in_(prompt_ids))
+                    )
+                ).scalars().all()
+
+                model_obj.prompts.clear()
+                model_obj.prompts.extend(prompt_objs)
+
+            await self.db_session.commit()
+            await self.db_session.refresh(model_obj)
+
+            return self.schema.from_orm(model_obj)
+
+        except Exception as e:
+            logger.error(f"Error updating AssessmentArea id={id}: {e}")
+            raise
