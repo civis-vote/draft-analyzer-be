@@ -53,7 +53,10 @@ class BaseView:
     async def create(self, data):
         try:
             # 1 Create a new record in the database.
-            model_obj = self.model(**data.dict())
+            if isinstance(data, self.model):
+                model_obj = data
+            else:
+                model_obj = self.model(**data.dict())
             self.db_session.add(model_obj)
             await self.db_session.commit()
             await self.db_session.refresh(model_obj)
