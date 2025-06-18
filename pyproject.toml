@@ -12,6 +12,8 @@ dependencies = [
     "asyncpg>=0.30.0",
     "uvicorn>=0.34.2",
     "loguru>=0.7.3",
+    "pymupdf>=1.26.1",
+    "python-multipart>=0.0.20",
 ]
 
 [dependency-groups]

@@ -94,3 +94,5 @@ watchfiles==1.0.5
     # via uvicorn
 websockets==15.0.1
     # via uvicorn
+pymupdf==1.26.1
+python-multipart==0.0.20

@@ -3,3 +3,4 @@ uv.lock
 .venv
 .civis*
 *.ruff_cache*
+uploads/*
