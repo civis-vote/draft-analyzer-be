@@ -6,4 +6,4 @@ DB_BASE_URL = (
 
 AZURE_DEEPSEEK_API_KEY=""
 AZURE_DEEPSEEK_ENDPOINT="https://{resource}.services.ai.azure.com/models"
-AZURE_DEEPSEEK_MODEL="{MODEL}"
+AZURE_DEEPSEEK_MODEL="text-embedding-3-large"

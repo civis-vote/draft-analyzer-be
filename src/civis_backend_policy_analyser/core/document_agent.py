@@ -36,6 +36,7 @@ class DocumentAgent:
 
         """
         self.document_id = str(uuid.uuid4()) if not document_id else document_id
+        logger.info(f"Vectore Store Document Id: {self.document_id}")
         self.vector_store = VectorDB(self.document_id)
 
     async def load_and_chunk(self, upload_file):

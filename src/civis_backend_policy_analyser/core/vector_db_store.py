@@ -4,7 +4,7 @@ from langchain_postgres.vectorstores import PGVector
 from langchain_openai import OpenAIEmbeddings
 
 from civis_backend_policy_analyser.utils.constants import (
-    DB_BASE_URL, VECTOR_DRIVER
+    DB_BASE_URL, VECTOR_DRIVER, AZURE_DEEPSEEK_MODEL
 )
 
 
@@ -26,25 +26,20 @@ class VectorDB:
             document_id (str): Unique identifier for the document
         """
         connection_string = DB_BASE_URL.format(driver_name=VECTOR_DRIVER)
-        embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+        embeddings = OpenAIEmbeddings(model=AZURE_DEEPSEEK_MODEL)
 
         self._store = PGVector(
             embedding_function=embeddings,
-            collection_name="DocumentChunkCollection",
+            collection_name=f"CIVIS_DRAFT_ANALYSER_{document_id}",
             connection_string=connection_string,
             async_mode=True,
             use_jsonb=True,
         )
-        self._retriever = None
-        self.retriever = self.document_id = document_id
+        self.retriever = self.__get_retriever(document_id)
+        self.document_id = document_id
 
-    @property
-    def retriever(self):
-        return self._retriever
-
-    @retriever.setter
-    def retriever(self, document_id):
-        self._retriever = self._store.as_retriever(
+    def __get_retriever(self, document_id):
+        return self._store.as_retriever(
             search_kwargs={"k": 5, "filter": {"document_id": document_id}}
         )
 

@@ -1,5 +1,4 @@
 langchain
-langchain-deepseek
 PyMuPDF
 pgvector
 psycopg[binary]
