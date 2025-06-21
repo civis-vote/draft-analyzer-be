@@ -84,7 +84,6 @@ make
 sudo make install
 ```
 
-
 ## In PostgreSQL database, create the extension:
 ```
 CREATE EXTENSION vector;
