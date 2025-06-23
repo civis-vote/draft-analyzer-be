@@ -1,10 +1,11 @@
 import os
 
 from langchain_postgres.vectorstores import PGVector
-from langchain_openai import OpenAIEmbeddings
+from langchain_openai import AzureOpenAIEmbeddings
 
 from civis_backend_policy_analyser.utils.constants import (
-    DB_BASE_URL, VECTOR_DRIVER, AZURE_DEEPSEEK_MODEL
+    AZURE_DEEPSEEK_MODEL, AZURE_DEEPSEEK_API_KEY, AZURE_DEEPSEEK_ENDPOINT,
+    VECTOR_CONNECTION_STRING
 )
 
 
@@ -25,14 +26,16 @@ class VectorDB:
         Args:
             document_id (str): Unique identifier for the document
         """
-        connection_string = DB_BASE_URL.format(driver_name=VECTOR_DRIVER)
-        embeddings = OpenAIEmbeddings(model=AZURE_DEEPSEEK_MODEL)
+        embedding_model = AzureOpenAIEmbeddings(
+            model=AZURE_DEEPSEEK_MODEL,
+            api_key=AZURE_DEEPSEEK_API_KEY,
+            azure_endpoint=AZURE_DEEPSEEK_ENDPOINT,  # Required for Azure
+        )
 
         self._store = PGVector(
-            embedding_function=embeddings,
+            embeddings=embedding_model,
             collection_name=f"CIVIS_DRAFT_ANALYSER_{document_id}",
-            connection_string=connection_string,
-            async_mode=True,
+            connection=VECTOR_CONNECTION_STRING,
             use_jsonb=True,
         )
         self.retriever = self.__get_retriever(document_id)
@@ -55,7 +58,7 @@ class VectorDB:
         """
         ids = [f"{self.document_id}_{i}" for i in range(len(chunks))]
         metadatas = [{"document_id": self.document_id} for _ in chunks]
-        self._store.add_texts(chunks, metadatas=metadatas, ids=ids)
+        self._store.aadd_texts(chunks, metadatas=metadatas, ids=ids)
 
     def delete_all_vectors(self):
         """

@@ -74,6 +74,7 @@ quote-style = "single"
 [dependency-groups]
 ai = [
     "langchain>=0.3.26",
+    "langchain-community>=0.3.21",
     "langchain-postgres>=0.0.14",
     "pgvector>=0.3.6",
     "psycopg[binary]>=3.2.9",
