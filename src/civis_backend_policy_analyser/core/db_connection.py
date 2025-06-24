@@ -10,19 +10,13 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from civis_backend_policy_analyser.utils.constants import DB_BASE_URL, DB_NAME, DB_PORT
+from civis_backend_policy_analyser.utils.constants import POSTGRES_CONNECTION_STRING
 
 
 class DatabaseSessionManager:
     def __init__(self):
-        db_url = DB_BASE_URL.format(
-            db_user='ffg',  #  os.getenv("DB_USER"),
-            db_secret='ffg_jpmc_civis',  #  os.getenv("DB_SECRET"),
-            db_port=DB_PORT,
-            database_name=DB_NAME,
-        )
         engine_keywords = {}
-        self._engine = create_async_engine(db_url, **engine_keywords)
+        self._engine = create_async_engine(POSTGRES_CONNECTION_STRING, **engine_keywords)
         self._sessionmaker = async_sessionmaker(autocommit=False, bind=self._engine)
 
     async def close(self):

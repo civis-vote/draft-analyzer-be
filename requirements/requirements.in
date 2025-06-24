@@ -1,0 +1,9 @@
+pydantic
+fastapi
+fastapi-cli
+FastAPI-SQLAlchemy
+alembic
+asyncpg
+uvicorn
+loguru
+greenlet

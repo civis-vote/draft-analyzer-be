@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run
 SHELL:=/usr/bin/bash
-VIRTUAL_ENV:=.civis
+## VIRTUAL_ENV:=.civis  ## Optional if you want to use it.
 
 
 ##@ Utility
@@ -11,10 +11,7 @@ help:  ## Display this help
 
 .PHONY: venv
 venv: uv
-	uv venv --python 3.12.3 ${VIRTUAL_ENV}; \
-	uv lock --active; \
-	make install && make dev; \
-	uv pip compile pyproject.toml -o requirements.txt  --active
+	uv venv --python 3.12.3; \
 
 .PHONY: uv
 uv:  ## Install uv if it's not present.
@@ -23,7 +20,10 @@ uv:  ## Install uv if it's not present.
 
 .PHONY: dev
 dev: uv ## Install dev dependencies
-	uv sync --dev --active --system-site-packages false; \
+	uv sync --test --active; \
+
+ai: uv
+	uv sync --ai --active;
 
 .PHONY: lock
 lock: uv ## lock dependencies
@@ -31,7 +31,7 @@ lock: uv ## lock dependencies
 
 .PHONY: install
 install: uv ## Install dependencies
-	@source ${VIRTUAL_ENV}/bin/activate && uv sync --active;
+	uv sync --all-groups --active;
 
 .PHONY: test
 test:  ## Run tests

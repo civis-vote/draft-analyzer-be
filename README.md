@@ -55,7 +55,7 @@ $ alembic upgrade head
 ## Run Fast API Application localhost server.
 
 ```
-export PYTHONPATH=/home/user/civi-backend-policy-analyser/src:$PYTHONPATH
+export PYTHONPATH=${PWD}/src:$PYTHONPATH
 source .civis/bin/activate
 cd src;
 python -m civis_backend_policy_analyser.api.app
@@ -64,7 +64,27 @@ python -m civis_backend_policy_analyser.api.app
 ## Test
 
 ```
-export PYTHONPATH=~/civis-ai-backend/src
+export PYTHONPATH=${PWD}/src:$PYTHONPATH
 make test
 make cov
+```
+
+## Setup PostgreSQL Vector Extension
+
+```
+sudo apt-get install postgresql-server-dev-all 
+or 
+sudo apt-get install postgresql-server-dev-16
+
+git clone https://github.com/pgvector/pgvector.git
+
+cd pgvector
+
+make
+sudo make install
+```
+
+## In PostgreSQL database, create the extension:
+```
+CREATE EXTENSION vector;
 ```
