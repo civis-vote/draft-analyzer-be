@@ -39,27 +39,25 @@ class DocumentAgent:
         logger.info(f"Vectore Store Document Id: {self.document_id}")
         self.vector_store = VectorDB(self.document_id)
 
-    async def load_and_chunk(self, upload_file):
+    def load_and_chunk(self, upload_file):
         """
         Ingests a document upload, extracts the text, chunks it, and stores vectors.
-
         Args:
             upload_file (UploadFile): A FastAPI file upload object (PDF)
-
         Returns:
             str: Unique document ID for downstream retrieval
-
         """
-        content = await upload_file.read()
-        text = self.__extract_text_from_pdf(content)
+        content = upload_file.read()
+        text = self.__extract_text_from_pdf(self.document_id, content)
         logger.info(f"Document content extraction done.")
-        
+
         document_chunks = self.__chunk_document(text)
         self.vector_store.store_embedding(document_chunks)
         logger.info("Document chunks has been embedded successfully to the vector store.")
         return {"document_id": self.document_id}
 
-    def __extract_text_from_pdf(file_bytes):
+    @staticmethod
+    def __extract_text_from_pdf(document_id, file_bytes):
         """
         Extracts plain text from a binary PDF file.
 
@@ -69,9 +67,10 @@ class DocumentAgent:
         Returns:
             str: Full extracted text from all pages
         """
-        doc = fitz.open(stream=file_bytes, filetype="pdf")
+        doc = fitz.open(filename=document_id, stream=file_bytes, filetype="pdf")
         return "\n".join(page.get_text() for page in doc)
 
+    @staticmethod
     def __chunk_document(text):
         """
         Performs semantic and recursive chunking of document text.
@@ -106,7 +105,7 @@ class DocumentAgent:
             dict: Prompt → generated output
         """
         rag_chain = get_rag_chain(retriever=self.vector_store.retriever)
-        return {prompt: rag_chain.run(prompt) for prompt in prompts}
+        return {prompt: rag_chain.invoke(prompt) for prompt in prompts}
 
     def cleanup(self):
         """
@@ -118,7 +117,7 @@ class DocumentAgent:
         self.vector_store.delete_all_vectors()
 
     @staticmethod
-    def __execution_summary_context(iterator_object: list, format_string: str):
+    def __execution_summary_context(self, iterator_object: list, format_string: str):
         return "\n\n".join([format_string.format(**kwargs) for kwargs in iterator_object])
 
     def execution_summary(self, exec_summary_prompt, context):

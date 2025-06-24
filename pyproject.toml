@@ -12,6 +12,7 @@ dependencies = [
     "greenlet>=3.2.3",
     "loguru>=0.7.3",
     "pydantic>=2.11.7",
+    "python-multipart>=0.0.20",
     "uvicorn>=0.34.3",
 ]
 

@@ -1,4 +1,7 @@
 import os
+import tracemalloc
+from loguru import logger
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from langchain_postgres.vectorstores import PGVector
 from langchain_openai import AzureOpenAIEmbeddings
@@ -7,6 +10,9 @@ from civis_backend_policy_analyser.utils.constants import (
     AZURE_DEEPSEEK_MODEL, AZURE_DEEPSEEK_API_KEY, AZURE_DEEPSEEK_ENDPOINT,
     VECTOR_CONNECTION_STRING
 )
+
+
+tracemalloc.start()
 
 
 class VectorDB:
@@ -27,15 +33,16 @@ class VectorDB:
             document_id (str): Unique identifier for the document
         """
         embedding_model = AzureOpenAIEmbeddings(
-            model=AZURE_DEEPSEEK_MODEL,
+            model="text-embedding-ada-002",
             api_key=AZURE_DEEPSEEK_API_KEY,
             azure_endpoint=AZURE_DEEPSEEK_ENDPOINT,  # Required for Azure
+            azure_deployment=AZURE_DEEPSEEK_MODEL,
         )
 
         self._store = PGVector(
             embeddings=embedding_model,
             collection_name=f"CIVIS_DRAFT_ANALYSER_{document_id}",
-            connection=VECTOR_CONNECTION_STRING,
+            connection=VECTOR_CONNECTION_STRING,  #  create_async_engine(VECTOR_CONNECTION_STRING),
             use_jsonb=True,
         )
         self.retriever = self.__get_retriever(document_id)
@@ -58,7 +65,9 @@ class VectorDB:
         """
         ids = [f"{self.document_id}_{i}" for i in range(len(chunks))]
         metadatas = [{"document_id": self.document_id} for _ in chunks]
-        self._store.aadd_texts(chunks, metadatas=metadatas, ids=ids)
+        logger.info(f"{self.document_id}: Storing total {len(chunks)} embeddings with metadata.")
+        result = self._store.add_texts(texts=chunks, metadatas=metadatas, ids=ids)
+        return result
 
     def delete_all_vectors(self):
         """
