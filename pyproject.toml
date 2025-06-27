@@ -1,94 +1,61 @@
 [project]
 name = "CIVISAIPolicyAnalyserBackend"
 version = "1.0.0"
+description = "Backend for draft summarization and analysis"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "pydantic>=2.11.3",
-    "fastapi==0.115.11",
-    "fastapi-cli==0.0.7",
-    "FastAPI-SQLAlchemy==0.2.1",
-    "alembic>=1.15.2",
+    "alembic>=1.16.2",
     "asyncpg>=0.30.0",
-    "uvicorn>=0.34.2",
+    "fastapi>=0.115.1",
+    "fastapi-cli>=0.0.7",
+    "fastapi-sqlalchemy>=0.2.1",
+    "greenlet>=3.2.3",
     "loguru>=0.7.3",
-    "pymupdf>=1.26.1",
+    "pydantic>=2.11.7",
     "python-multipart>=0.0.20",
+    "uvicorn>=0.34.3",
+    "langchain>=0.3.26",
+    "langchain-community>=0.3.21",
+    "langchain-postgres>=0.0.14",
+    "pgvector>=0.3.6",
+    "psycopg[binary]>=3.2.9",
+    "pymupdf>=1.26.1",  
+    "python-dotenv>=1.1.0"
 ]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [dependency-groups]
-dev = [
-    "pytest>=8.3.5",
-    "coverage==7.8.0",
-    "pytest-cov==6.1.1",
-    "ruff>=0.11.6",
+test = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "coverage>=7.4.0",
+    "ruff>=0.4.4"
 ]
-
 
 [tool.ruff.lint]
-ignore-init-module-imports = false
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "site-packages",
-    "venv",
-]
-ignore = [
-    "E501"  # Line is Too Long
-]
-select = [
-    # pycodestyle
-    "E",
-    # Pyflakes
-    "F",
-    # pyupgrade
-    "UP",
-    # flake8-bugbear
-    "B",
-    # flake8-simplify
-    "SIM",
-    # isort
-    "I",
-]
-# Assume Python >3.9
-# Allow fix for all enabled rules (when `--fix`) is provided.
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["E501"]
 fixable = ["ALL"]
 unfixable = []
+exclude = [
+    ".venv", "__pycache__", "build", "dist", ".mypy_cache", ".ruff_cache", "node_modules"
+]
 
 [tool.ruff.format]
-# 5. Use single quotes in `ruff format`.
 quote-style = "single"
 
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 
 [tool.ruff.lint.isort]
-case-sensitive = true
 combine-as-imports = true
+case-sensitive = true
 detect-same-package = false
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F403"]
-"src/civis_backend_policy_analyser/alembic/*" = ["UP035", "I001", "UP007"]
+"alembic/*" = ["UP035", "I001", "UP007"]
