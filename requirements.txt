@@ -13,6 +13,7 @@ annotated-types==0.7.0
 anyio==4.9.0
     # via
     #   httpx
+    #   openai
     #   starlette
     #   watchfiles
 asyncpg==0.30.0
@@ -35,6 +36,8 @@ click==8.2.1
     #   uvicorn
 dataclasses-json==0.6.7
     # via langchain-community
+distro==1.9.0
+    # via openai
 fastapi==0.115.13
     # via civisaipolicyanalyserbackend (pyproject.toml)
 fastapi-cli==0.0.7
@@ -58,7 +61,9 @@ httpcore==1.0.9
 httptools==0.6.4
     # via uvicorn
 httpx==0.28.1
-    # via langsmith
+    # via
+    #   langsmith
+    #   openai
 httpx-sse==0.4.1
     # via langchain-community
 idna==3.10
@@ -67,6 +72,8 @@ idna==3.10
     #   httpx
     #   requests
     #   yarl
+jiter==0.10.0
+    # via openai
 jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.0.0
@@ -81,8 +88,11 @@ langchain-core==0.3.66
     # via
     #   langchain
     #   langchain-community
+    #   langchain-openai
     #   langchain-postgres
     #   langchain-text-splitters
+langchain-openai==0.3.27
+    # via civisaipolicyanalyserbackend (pyproject.toml)
 langchain-postgres==0.0.15
     # via civisaipolicyanalyserbackend (pyproject.toml)
 langchain-text-splitters==0.3.8
@@ -115,6 +125,8 @@ numpy==2.3.1
     #   langchain-community
     #   langchain-postgres
     #   pgvector
+openai==1.93.0
+    # via langchain-openai
 orjson==3.10.18
     # via langsmith
 packaging==24.2
@@ -145,6 +157,7 @@ pydantic==2.11.7
     #   langchain
     #   langchain-core
     #   langsmith
+    #   openai
     #   pydantic-settings
 pydantic-core==2.33.2
     # via pydantic
@@ -167,12 +180,15 @@ pyyaml==6.0.2
     #   langchain-community
     #   langchain-core
     #   uvicorn
+regex==2024.11.6
+    # via tiktoken
 requests==2.32.4
     # via
     #   langchain
     #   langchain-community
     #   langsmith
     #   requests-toolbelt
+    #   tiktoken
 requests-toolbelt==1.0.0
     # via langsmith
 rich==14.0.0
@@ -184,7 +200,9 @@ rich-toolkit==0.14.7
 shellingham==1.5.4
     # via typer
 sniffio==1.3.1
-    # via anyio
+    # via
+    #   anyio
+    #   openai
 sqlalchemy==2.0.41
     # via
     #   alembic
@@ -200,6 +218,10 @@ tenacity==9.1.2
     # via
     #   langchain-community
     #   langchain-core
+tiktoken==0.9.0
+    # via langchain-openai
+tqdm==4.67.1
+    # via openai
 typer==0.16.0
     # via fastapi-cli
 typing-extensions==4.14.0
@@ -207,6 +229,7 @@ typing-extensions==4.14.0
     #   alembic
     #   fastapi
     #   langchain-core
+    #   openai
     #   psycopg-pool
     #   pydantic
     #   pydantic-core
