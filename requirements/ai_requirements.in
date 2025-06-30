@@ -1,0 +1,7 @@
+langchain
+PyMuPDF
+pgvector
+psycopg[binary]
+python-dotenv
+langchain-postgres
+langchain-openai

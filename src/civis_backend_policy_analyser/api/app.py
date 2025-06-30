@@ -10,6 +10,7 @@ from civis_backend_policy_analyser.api.document_metadata_router import document_
 from civis_backend_policy_analyser.api.assessment_area_router import assessment_area_router
 from civis_backend_policy_analyser.api.document_type_router import document_type_router
 from civis_backend_policy_analyser.api.prompt_router import prompt_router
+from civis_backend_policy_analyser.api.document_summary_router import summary_router
 from civis_backend_policy_analyser.core.db_connection import sessionmanager
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -52,6 +53,7 @@ app.include_router(document_type_router)
 app.include_router(assessment_area_router)
 app.include_router(prompt_router)
 app.include_router(document_router)
+app.include_router(summary_router)
 
 
 if __name__ == '__main__':

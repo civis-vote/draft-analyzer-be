@@ -1,8 +1,8 @@
-version: "3.8"
-
 services:
   postgres:
-    image: postgres:17
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: civis_postgres_container
     environment:
       POSTGRES_PASSWORD: ffg_jpmc_civis

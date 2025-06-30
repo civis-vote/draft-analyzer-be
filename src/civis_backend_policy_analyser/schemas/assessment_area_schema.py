@@ -16,7 +16,7 @@ class AssessmentAreaUpdate(AssessmentAreaBase):
 
 class AssessmentAreaOut(AssessmentAreaBase):
     assessment_id: int
-    created_by: str
+    created_by: Optional[str]
     created_on: Optional[datetime]
     updated_by: Optional[str]
     updated_on: Optional[datetime]

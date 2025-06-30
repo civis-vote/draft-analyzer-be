@@ -4,3 +4,7 @@ uv.lock
 .civis*
 *.ruff_cache*
 uploads/*
+build/
+dist/
+*.egg-info/
+.DS_Store
