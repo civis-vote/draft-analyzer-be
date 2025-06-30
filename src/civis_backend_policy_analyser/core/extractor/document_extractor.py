@@ -11,11 +11,13 @@ class DocumentExtractor(ABC):
     def get_extractor(upload_file: UploadFile):
         from .pdf_extractor import PDFExtractor
         from .docx_extractor import DOCXExtractor
+        from .txt_extractor import TextExtractor
         # Add more imports as you add new extractors
 
         extractor_map = {
             "pdf": PDFExtractor,
             "docx": DOCXExtractor,
+            "txt": TextExtractor,
             # Add more mappings as needed
         }
         filename = upload_file.filename
@@ -23,5 +25,5 @@ class DocumentExtractor(ABC):
 
         extractor_cls = extractor_map.get(file_ext.lower())
         if not extractor_cls:
-            raise ValueError("Unsupported file type. Only PDF and DOCX are supported.")
+            raise ValueError("Unsupported file type. Only PDF, DOCX, and TXT are supported.")
         return extractor_cls()
