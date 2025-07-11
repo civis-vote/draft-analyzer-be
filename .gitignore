@@ -1,6 +1,7 @@
 *__pycache__*
 uv.lock
 .venv
+.env
 .civis*
 *.ruff_cache*
 uploads/*

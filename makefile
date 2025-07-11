@@ -107,3 +107,7 @@ migrate:
 	@echo "Running migrations..."
 	uv run alembic upgrade head
 
+.PHONY: revision
+revision:
+	@echo "Creating new migration..."
+	uv run alembic revision --autogenerate -m "Initial schema migration"

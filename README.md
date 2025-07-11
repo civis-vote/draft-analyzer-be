@@ -21,13 +21,36 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-org>/civis-backend-policy-analyser.git
+git clone https://github.com/civis-vote/draft-analyzer-be.git
 cd civis-backend-policy-analyser
 ```
 
 ---
 
-### 3. Bootstrap the Project
+### 3. Environment Configuration (.env)
+
+Create a .env file
+
+```
+# example .env 
+
+# Database settings
+DB_USER=username
+DB_PASSWORD=password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=db-name
+
+# Azure  DeepSeek settings 
+AZURE_DEEPSEEK_API_KEY=your-api-key
+AZURE_DEEPSEEK_ENDPOINT=https://your-resource.endpoint
+AZURE_DEEPSEEK_MODEL=your-model-name
+AZURE_DEEPSEEK_DEPLOYMENT_NAME=your-deployment-name
+AZURE_OPENAI_API_VERSION=your-api-version
+LLM_CLIENT=ollama
+
+```
+### 4. Bootstrap the Project
 
 ```bash
 make setup
@@ -176,6 +199,7 @@ This runs `seed_data.py` inside the virtual environment.
 | `make fix`             | Auto-fix lint issues                    |
 | `make test`            | Run unit tests                          |
 | `make cov`             | Run tests with coverage                 |
+| `make revision`        | Create alembic schema as per models     |
 | `make seed`            | Seed initial data                       |
 | `make db-up`           | Start DB container                      |
 | `make db-down`         | Stop DB container                       |
