@@ -36,7 +36,18 @@ class DocumentAgent:
 
         return {"document_id": self.document_id, "size_kb": size_kb, "number_of_pages": number_of_pages}
 
-    def summarize(self, summary_prompt="Summarize this document and return result in nice presentable html format:"):
+    def summarize(self, summary_prompt="Summarize this document and return result in nice presentable html format"):
+
+        summary_prompt = """
+        You are a summarization assistant. Your task is to summarize documents concisely and professionally.
+            Instructions:
+            - Only include factual, useful information from the input.
+            - Do not include phrases like "Thinking...", "Let's see", or "As an AI".
+            - Do not explain your reasoning.
+            - Keep the summary objective and direct.
+            - return result in nice presentable html format
+            Now summarize the following content:
+        """
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
         return summarizer.summarize(summary_prompt)
 

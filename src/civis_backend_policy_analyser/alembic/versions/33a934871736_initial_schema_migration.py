@@ -1,8 +1,8 @@
-"""All schema generated
+"""Initial schema migration
 
-Revision ID: 92acc645abec
+Revision ID: 33a934871736
 Revises: 
-Create Date: 2025-06-16 22:48:59.060669
+Create Date: 2025-07-06 23:27:05.585944
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '92acc645abec'
+revision: str = '33a934871736'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -41,6 +41,15 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('doc_id')
     )
     op.create_index(op.f('ix_document_metadata_doc_id'), 'document_metadata', ['doc_id'], unique=False)
+    op.create_table('document_summary',
+    sa.Column('doc_summary_id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('document_id', sa.String(length=100), nullable=False),
+    sa.Column('summary_text', sa.Text(), nullable=True),
+    sa.Column('created_on', sa.TIMESTAMP(), nullable=True),
+    sa.Column('created_by', sa.String(length=100), nullable=True),
+    sa.PrimaryKeyConstraint('doc_summary_id')
+    )
+    op.create_index(op.f('ix_document_summary_document_id'), 'document_summary', ['document_id'], unique=False)
     op.create_table('document_type',
     sa.Column('doc_type_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('doc_type_name', sa.String(length=255), nullable=False),
@@ -93,6 +102,8 @@ def downgrade() -> None:
     op.drop_table('assessment_area_prompt')
     op.drop_table('prompt')
     op.drop_table('document_type')
+    op.drop_index(op.f('ix_document_summary_document_id'), table_name='document_summary')
+    op.drop_table('document_summary')
     op.drop_index(op.f('ix_document_metadata_doc_id'), table_name='document_metadata')
     op.drop_table('document_metadata')
     op.drop_table('assessment_area')

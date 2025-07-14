@@ -3,10 +3,14 @@ from fastapi import UploadFile
 from loguru import logger
 
 from civis_backend_policy_analyser.core.document_agent import DocumentAgent
+from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
+from civis_backend_policy_analyser.core.embeddings.azure_embedding import AzureEmbeddingModel
 from civis_backend_policy_analyser.core.embeddings.ollama_embedding import OllamaEmbeddingModel
+from civis_backend_policy_analyser.core.llm.azure_llm import AzureLLMModel
 from civis_backend_policy_analyser.core.llm.ollama_llm import OllamaLLMModel
 from civis_backend_policy_analyser.models.document_metadata import DocumentMetadata
 from civis_backend_policy_analyser.schemas.document_metadata_schema import DocumentMetadataOut
+from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
 from civis_backend_policy_analyser.views.base_view import BaseView
 
 class DocumentMetadataView(BaseView):
@@ -17,10 +21,7 @@ class DocumentMetadataView(BaseView):
         if file.content_type not in ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]:
             raise ValueError("Only PDF or DOCX files are supported")
 
-        agent = DocumentAgent(
-            embedding_model=OllamaEmbeddingModel(),
-            llm_model=OllamaLLMModel()
-        )
+        agent = create_document_agent(LLMClient(LLM_CLIENT))
 
         document_data = await agent.load_and_chunk(file)
         logger.info(f"Document {file.filename} has been processed and chunked with ID: {document_data['document_id']}")

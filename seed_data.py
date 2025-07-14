@@ -76,56 +76,56 @@ def seed():
 
     # Seed Assessment Areas
     assessment_areas = [
-        AssessmentArea(assessment_id=1, assessment_name="Does the Draft Clearly Explain Why and What?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
-        AssessmentArea(assessment_id=2, assessment_name="Does the Draft Thoroughly Assess the Impact?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 21, 20, 20, 32)),
-        AssessmentArea(assessment_id=3, assessment_name="Does the Draft Enable Meaningful Public Participation?", description="This area evaluates how well the policy enables and encourages public feedback and participation.", created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
+        AssessmentArea(assessment_name="Does the Draft Clearly Explain Why and What?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
+        AssessmentArea(assessment_name="Does the Draft Thoroughly Assess the Impact?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 21, 20, 20, 32)),
+        AssessmentArea(assessment_name="Does the Draft Enable Meaningful Public Participation?", description="This area evaluates how well the policy enables and encourages public feedback and participation.", created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
     ]
     session.add_all(assessment_areas)
     session.commit()
 
     # Seed Prompts
     prompts = [
-        Prompt(prompt_id=1, criteria="Justification", question="Is the need for the policy well-founded? Does the policy provide relevant context, data, or rationale for why it is needed?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 18), updated_on=datetime(2025, 6, 16, 17, 31, 18)),
-        Prompt(prompt_id=2, criteria="Essential Elements", question="Are the main objectives, provisions, or changes the policy introduces clearly stated? Does it specify what the policy aims to achieve?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 59), updated_on=datetime(2025, 6, 16, 17, 31, 59)),
-        Prompt(prompt_id=3, criteria="Comprehension", question="Is the policy text accessible, logically structured, and free of contradictions? Does it use clear language, headings, or summaries that aid understanding?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 26), updated_on=datetime(2025, 6, 16, 17, 32, 26)),
-        Prompt(prompt_id=4, criteria="Problem Identification", question="Does the policy define the root cause or specific issue it aims to address? Are challenges or market failures clearly outlined?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 57), updated_on=datetime(2025, 6, 16, 17, 32, 57)),
-        Prompt(prompt_id=5, criteria="Cost-Benefit Analysis", question="Does the policy include an economic or financial appraisal of its measures? Does it weigh potential benefits against costs or risks?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 33, 43), updated_on=datetime(2025, 6, 16, 17, 33, 43)),
-        Prompt(prompt_id=6, criteria="Alternatives", question="Does the draft discuss other policy models or approaches? Is there a reason the chosen approach is deemed preferable?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
+        Prompt(criteria="Justification", question="Is the need for the policy well-founded? Does the policy provide relevant context, data, or rationale for why it is needed?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 18), updated_on=datetime(2025, 6, 16, 17, 31, 18)),
+        Prompt(criteria="Essential Elements", question="Are the main objectives, provisions, or changes the policy introduces clearly stated? Does it specify what the policy aims to achieve?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 59), updated_on=datetime(2025, 6, 16, 17, 31, 59)),
+        Prompt(criteria="Comprehension", question="Is the policy text accessible, logically structured, and free of contradictions? Does it use clear language, headings, or summaries that aid understanding?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 26), updated_on=datetime(2025, 6, 16, 17, 32, 26)),
+        Prompt(criteria="Problem Identification", question="Does the policy define the root cause or specific issue it aims to address? Are challenges or market failures clearly outlined?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 57), updated_on=datetime(2025, 6, 16, 17, 32, 57)),
+        Prompt(criteria="Cost-Benefit Analysis", question="Does the policy include an economic or financial appraisal of its measures? Does it weigh potential benefits against costs or risks?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 33, 43), updated_on=datetime(2025, 6, 16, 17, 33, 43)),
+        Prompt(criteria="Alternatives", question="Does the draft discuss other policy models or approaches? Is there a reason the chosen approach is deemed preferable?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
     ]
     session.add_all(prompts)
     session.commit()
 
     # Seed Assessment Area - Prompt mappings
     assessment_prompts = [
-        AssessmentAreaPrompt(id=1, assessment_id=1, prompt_id=1, created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
-        AssessmentAreaPrompt(id=2, assessment_id=1, prompt_id=2, created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
-        AssessmentAreaPrompt(id=3, assessment_id=1, prompt_id=3, created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
-        AssessmentAreaPrompt(id=4, assessment_id=2, prompt_id=4, created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 16, 17, 36, 54)),
-        AssessmentAreaPrompt(id=5, assessment_id=2, prompt_id=5, created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 16, 17, 36, 54)),
-        AssessmentAreaPrompt(id=6, assessment_id=2, prompt_id=6, created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 16, 17, 36, 54)),
-        AssessmentAreaPrompt(id=7, assessment_id=3, prompt_id=1, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
-        AssessmentAreaPrompt(id=8, assessment_id=3, prompt_id=2, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
+        AssessmentAreaPrompt(assessment_id=1, prompt_id=1, created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
+        AssessmentAreaPrompt(assessment_id=1, prompt_id=2, created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
+        AssessmentAreaPrompt(assessment_id=1, prompt_id=3, created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
+        AssessmentAreaPrompt(assessment_id=2, prompt_id=4, created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 16, 17, 36, 54)),
+        AssessmentAreaPrompt(assessment_id=2, prompt_id=5, created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 16, 17, 36, 54)),
+        AssessmentAreaPrompt(assessment_id=2, prompt_id=6, created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 16, 17, 36, 54)),
+        AssessmentAreaPrompt(assessment_id=3, prompt_id=1, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
+        AssessmentAreaPrompt(assessment_id=3, prompt_id=2, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
     ]
     session.add_all(assessment_prompts)
     session.commit()
 
     # Document Types
     doc_types = [
-        DocumentType(doc_type_id=1, doc_type_name="Consultation", description="Documents related to public or internal consultations on policy matters. updated", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 21, 20, 27, 55)),
-        DocumentType(doc_type_id=2, doc_type_name="Law Order", description="Legal documents including new laws, orders, or government acts.", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 17), updated_on=datetime(2025, 6, 16, 17, 41, 17)),
-        DocumentType(doc_type_id=3, doc_type_name="Amendment", description="Documents describing proposed or enacted changes to existing laws or policies.", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 34), updated_on=datetime(2025, 6, 16, 17, 41, 34)),
+        DocumentType(doc_type_name="Consultation", description="Documents related to public or internal consultations on policy matters. updated", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 21, 20, 27, 55)),
+        DocumentType(doc_type_name="Law Order", description="Legal documents including new laws, orders, or government acts.", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 17), updated_on=datetime(2025, 6, 16, 17, 41, 17)),
+        DocumentType(doc_type_name="Amendment", description="Documents describing proposed or enacted changes to existing laws or policies.", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 34), updated_on=datetime(2025, 6, 16, 17, 41, 34)),
     ]
     session.add_all(doc_types)
     session.commit()
 
     # DocumentTypeAssessmentArea mappings
     dtaa = [
-        DocumentTypeAssessmentArea(id=1, doc_type_id=1, assessment_id=1, created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 16, 17, 40, 59)),
-        DocumentTypeAssessmentArea(id=2, doc_type_id=1, assessment_id=2, created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 16, 17, 40, 59)),
-        DocumentTypeAssessmentArea(id=3, doc_type_id=2, assessment_id=1, created_on=datetime(2025, 6, 16, 17, 41, 17), updated_on=datetime(2025, 6, 16, 17, 41, 17)),
-        DocumentTypeAssessmentArea(id=4, doc_type_id=3, assessment_id=2, created_on=datetime(2025, 6, 16, 17, 41, 34), updated_on=datetime(2025, 6, 16, 17, 41, 34)),
-        DocumentTypeAssessmentArea(id=7, doc_type_id=1, assessment_id=3, created_on=datetime(2025, 6, 21, 20, 31, 50), updated_on=datetime(2025, 6, 21, 20, 31, 50)),
-        DocumentTypeAssessmentArea(id=8, doc_type_id=3, assessment_id=3, created_on=datetime(2025, 6, 21, 20, 32, 18), updated_on=datetime(2025, 6, 21, 20, 32, 18)),
+        DocumentTypeAssessmentArea(doc_type_id=1, assessment_id=1, created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 16, 17, 40, 59)),
+        DocumentTypeAssessmentArea(doc_type_id=1, assessment_id=2, created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 16, 17, 40, 59)),
+        DocumentTypeAssessmentArea(doc_type_id=2, assessment_id=1, created_on=datetime(2025, 6, 16, 17, 41, 17), updated_on=datetime(2025, 6, 16, 17, 41, 17)),
+        DocumentTypeAssessmentArea(doc_type_id=3, assessment_id=2, created_on=datetime(2025, 6, 16, 17, 41, 34), updated_on=datetime(2025, 6, 16, 17, 41, 34)),
+        DocumentTypeAssessmentArea(doc_type_id=1, assessment_id=3, created_on=datetime(2025, 6, 21, 20, 31, 50), updated_on=datetime(2025, 6, 21, 20, 31, 50)),
+        DocumentTypeAssessmentArea(doc_type_id=3, assessment_id=3, created_on=datetime(2025, 6, 21, 20, 32, 18), updated_on=datetime(2025, 6, 21, 20, 32, 18)),
     ]
     session.add_all(dtaa)
     session.commit()
