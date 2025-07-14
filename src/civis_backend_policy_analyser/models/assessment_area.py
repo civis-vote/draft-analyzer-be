@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, TIMESTAMP, func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from civis_backend_policy_analyser.models.assessment_area_prompt import AssessmentAreaPrompt
@@ -12,6 +12,7 @@ class AssessmentArea(Base):
     assessment_id = Column(Integer, primary_key=True, autoincrement=True)
     assessment_name = Column(String(255), nullable=False)
     description = Column(Text)
+    summary_prompt = Column(Integer, ForeignKey("prompt.prompt_id"), nullable=False) 
     created_by = Column(String(100))
     created_on = Column(TIMESTAMP, default=func.now())
     updated_by = Column(String(100))

@@ -7,6 +7,7 @@ class AssessmentAreaBase(BaseModelSchema):
     assessment_name: Optional[str] = None
     description: Optional[str] = None
     prompt_ids: Optional[List[int]] = Field(default_factory=list)
+    summary_prompt: Optional[int] = None
 
 class AssessmentAreaCreate(AssessmentAreaBase):
     created_by: Optional[str] = None

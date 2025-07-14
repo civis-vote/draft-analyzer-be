@@ -7,8 +7,10 @@ class Prompt(Base):
     __tablename__ = 'prompt'
 
     prompt_id = Column(Integer, primary_key=True, autoincrement=True)
+    prompt_type = Column(String(50), nullable=False)
     criteria = Column(String(255), nullable=False)
-    question = Column(Text, nullable=False)
+    description = Column(Text, nullable=False)
+    technical_prompt = Column(Text, nullable=False)
     created_by = Column(String(100))
     created_on = Column(TIMESTAMP, default=func.now())
     updated_by = Column(String(100))
