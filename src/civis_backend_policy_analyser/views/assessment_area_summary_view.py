@@ -13,7 +13,7 @@ class AssessmentAreaSummaryView(BaseView):
     model = AssessmentAreaSummary
     schema = AssessmentAreaSummarySchema
 
-    async def summarize_assessment_area(self, document_id, assessment_id):
+    async def summarize_assessment_area(self, document_id: str, assessment_id: int) -> AssessmentAreaSummarySchema:
         # fetch assessment area summary prompt
         summary_prompt = await self.fetch_summary_prompt(assessment_id)
         # create document agent and invoke LLM
@@ -23,16 +23,17 @@ class AssessmentAreaSummaryView(BaseView):
             raise ValueError(f"Could not summarize document {document_id} for assessment area {assessment_id}")
         logger.info(f"started fetching summary from LLM for document id: {document_id} and assessment id: {assessment_id}")
         summary_record = AssessmentAreaSummarySchema(
+            doc_id = document_id,
             assessment_id = assessment_id,
             summary_text = assessment_summary,
             created_on = datetime.now(),
-            created_by = "Admin"
+            created_by = "Admin"  # needs to be replaced with user_id
         )
         logger.info(f"fetching summary from LLM: {assessment_summary}")
         assessment_area_summary = await self.create(summary_record)
         return assessment_area_summary
 
-    async def fetch_summary_prompt(self, assessment_id):
+    async def fetch_summary_prompt(self, assessment_id: int) -> str:
         # get prompt id from summary_prompt column in assessment_area table
         assessment_area_view = AssessmentAreaView(self.db_session)
         assessment_area_record = await assessment_area_view.filter(assessment_id=assessment_id)[0]

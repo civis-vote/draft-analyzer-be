@@ -26,6 +26,6 @@ async def score_assessment_area(
     summary_view = AssessmentAreaSummaryView(db_session)
     scoring_view = DocumentScoreView(db_session)
     assessment_area_summary = await summary_view.summarize_assessment_area(document_id, assessment_id)
-    assessment_score = await scoring_view.score_assessment_area(document_id, assessment_id)
-    formatted_assessment = await scoring_view.format_result(assessment_area_summary, assessment_score)
-    return formatted_assessment
+    assessment_scores = await scoring_view.score_assessment_area(document_id, assessment_id)
+    assessment_area_analysis = await scoring_view.format_result(assessment_area_summary, assessment_scores)
+    return assessment_area_analysis

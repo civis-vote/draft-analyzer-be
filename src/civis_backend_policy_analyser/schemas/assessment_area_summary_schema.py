@@ -3,7 +3,8 @@ from typing import Optional
 from datetime import datetime
 
 class AssessmentAreaSummarySchema(BaseModelSchema):
-    assessment_id: str
+    doc_id: str
+    assessment_id: int
     summary_text: str
     created_on: Optional[str] = None
     created_by: Optional[str] = None
