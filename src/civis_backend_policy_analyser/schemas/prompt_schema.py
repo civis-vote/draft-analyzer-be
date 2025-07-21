@@ -4,8 +4,10 @@ from datetime import datetime
 
 class PromptSchema(BaseModelSchema):
     prompt_id: Optional[int] = None
+    prompt_type: str
     criteria: str
-    question: str
+    description: str
+    technical_prompt: Optional[str] = None
     created_by: str
     created_on: Optional[datetime] = None
     updated_by: Optional[str] = None

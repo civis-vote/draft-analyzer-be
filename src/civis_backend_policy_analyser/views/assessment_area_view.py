@@ -22,7 +22,7 @@ class AssessmentAreaView(BaseView):
     - Legal compliance area
 
     Business Rules:
-    - Each assessment area may be linked to multiple prompts (questions or criteria).
+    - Each assessment area may be linked to multiple prompts (descriptions or criteria).
     - Prompts are managed via a many-to-many relationship.
     """
 

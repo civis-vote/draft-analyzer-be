@@ -9,6 +9,7 @@ from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
 class DocumentTypeBase(BaseModelSchema):
     doc_type_name: Optional[str] = None
     description: Optional[str] = None
+    doc_validation_prompt: Optional[int] = None
     assessment_ids: Optional[List[int]] = Field(default_factory=list)
 
 class DocumentTypeCreate(DocumentTypeBase):
