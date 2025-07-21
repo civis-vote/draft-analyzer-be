@@ -15,9 +15,10 @@ SessionLocal = sessionmaker(bind=engine)
 
 class AssessmentArea(Base):
     __tablename__ = "assessment_area"
-    assessment_id = Column(Integer, primary_key=True)
+    assessment_id = Column(Integer, primary_key=True, autoincrement=True)
     assessment_name = Column(String(255), nullable=False)
     description = Column(Text)
+    summary_prompt = Column(Integer, nullable=False)
     created_by = Column(String(100))
     created_on = Column(DateTime)
     updated_by = Column(String(100))
@@ -25,9 +26,11 @@ class AssessmentArea(Base):
 
 class Prompt(Base):
     __tablename__ = "prompt"
-    prompt_id = Column(Integer, primary_key=True)
+    prompt_type = Column(String(50), nullable=False)  # e.g., ASSESSMENT, VALIDATION
+    prompt_id = Column(Integer, primary_key=True, autoincrement=True)
     criteria = Column(String(255), nullable=False)
-    question = Column(Text, nullable=False)
+    description = Column(Text, nullable=False)
+    technical_prompt = Column(Text, nullable=False)  # Detailed instructions for LLM
     created_by = Column(String(100))
     created_on = Column(DateTime)
     updated_by = Column(String(100))
@@ -35,7 +38,7 @@ class Prompt(Base):
 
 class AssessmentAreaPrompt(Base):
     __tablename__ = "assessment_area_prompt"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     assessment_id = Column(Integer, ForeignKey("assessment_area.assessment_id", ondelete="CASCADE"))
     prompt_id = Column(Integer, ForeignKey("prompt.prompt_id", ondelete="CASCADE"))
     created_on = Column(DateTime)
@@ -44,9 +47,10 @@ class AssessmentAreaPrompt(Base):
 
 class DocumentType(Base):
     __tablename__ = "document_type"
-    doc_type_id = Column(Integer, primary_key=True)
+    doc_type_id = Column(Integer, primary_key=True, autoincrement=True)
     doc_type_name = Column(String(255), nullable=False)
     description = Column(Text)
+    doc_validation_prompt = Column(Integer, nullable=False)  
     created_by = Column(String(100))
     created_on = Column(DateTime)
     updated_by = Column(String(100))
@@ -54,7 +58,7 @@ class DocumentType(Base):
 
 class DocumentTypeAssessmentArea(Base):
     __tablename__ = "document_type_assessment_area"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     doc_type_id = Column(Integer, ForeignKey("document_type.doc_type_id", ondelete="CASCADE"))
     assessment_id = Column(Integer, ForeignKey("assessment_area.assessment_id", ondelete="CASCADE"))
     created_on = Column(DateTime)
@@ -74,26 +78,111 @@ class DocumentMetadata(Base):
 def seed():
     session = SessionLocal()
 
+    # Seed Prompts
+    prompts = [
+        Prompt(prompt_type = "ASSESSMENT", criteria="Justification", description="Is the need for the policy well-founded? Does the policy provide relevant context, data, or rationale for why it is needed?", 
+               technical_prompt = """You are evaluating the draft policy solely on the ‘Justification’ criterion. 
+                    1) Carefully read every section of the draft. 
+                    2) Identify and note why the policy says it is needed (problem statement, market gaps, legal obligations, statistics, context). 
+                    3) In ≤ 40 words, summarise that rationale. 
+                    4) Using the rubric below, assign a score 1‑5. 
+                    5) Cite the exact section/page (or paragraph heading) that best supports your judgment. 
+                    6) Return ONLY the JSON object described under ‘Expected JSON Output’. Do NOT add anything else.
+
+                    Score 5 – Clear, data‑backed rationale with context & urgency  
+                    4 – Strong rationale; minor evidence gaps  
+                    3 – General claims; limited evidence  
+                    2 – Vague need; little relevance  
+                    1 – No discernible justification
+
+                    json {
+                    "criterion": "Justification",
+                    "score": <1‑5>,
+                    "reasoning": "<≤40 word summary>",
+                    "ref": "<Section/page cited>"
+                    }
+                    """
+                    ,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 18), updated_on=datetime(2025, 6, 16, 17, 31, 18)),
+        Prompt(prompt_type = "ASSESSMENT", criteria="Essential Elements", description="Are the main objectives, provisions, or changes the policy introduces clearly stated? Does it specify what the policy aims to achieve?",
+               technical_prompt="""
+                            Evaluate ONLY the ‘Essential Elements’ criterion. 
+                              1) Read the policy thoroughly. 
+                              2) List for yourself (a) stated objectives, (b) scope (who/what is covered), (c) key measures/incentives. 
+                              3) Judge if these are complete and explicit. 
+                              4) In ≤ 40 words, summarise ‘what’ the policy proposes. 
+                              5) Score 1‑5 with rubric. 
+                              6) Cite the best supporting section/page. 
+                              7) Output exactly the JSON object defined.
+
+                              5 – Objectives, scope & measures are all explicit & detailed  
+                              4 – Most elements clear; minor gaps  
+                              3 – Some elements vague/missing  
+                              2 – Major omissions or confusion  
+                              1 – Very unclear or absent
+
+                              json {
+                                "criterion": "Essential Elements",
+                                "score": <1‑5>,
+                                "reasoning": "<≤40 word summary>",
+                                "ref": "<Section/page cited>"
+                              }
+                """, 
+                created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 59), updated_on=datetime(2025, 6, 16, 17, 31, 59)),
+        Prompt(prompt_type = "ASSESSMENT", criteria="Comprehension", description="Is the policy text accessible, logically structured, and free of contradictions? Does it use clear language, headings, or summaries that aid understanding?", 
+               technical_prompt="""
+               json {
+                 "criterion": "Comprehension",
+                 "score": <1‑5>,
+                 "reasoning": "<≤40 word summary>",
+                 "ref": "<Section/page cited>"
+               }
+               """,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 26), updated_on=datetime(2025, 6, 16, 17, 32, 26)),
+        Prompt(prompt_type = "ASSESSMENT", criteria="Problem Identification", description="Does the policy define the root cause or specific issue it aims to address? Are challenges or market failures clearly outlined?", 
+               technical_prompt="""
+               json {
+                 "criterion": "Comprehension",
+                 "score": <1‑5>,
+                 "reasoning": "<≤40 word summary>",
+                 "ref": "<Section/page cited>"
+               }
+               """,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 57), updated_on=datetime(2025, 6, 16, 17, 32, 57)),
+        Prompt(prompt_type = "ASSESSMENT", criteria="Cost-Benefit Analysis", description="Does the policy include an economic or financial appraisal of its measures? Does it weigh potential benefits against costs or risks?", 
+               technical_prompt="""
+               json {
+                 "criterion": "Comprehension",
+                 "score": <1‑5>,
+                 "reasoning": "<≤40 word summary>",
+                 "ref": "<Section/page cited>"
+               }
+               """,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 33, 43), updated_on=datetime(2025, 6, 16, 17, 33, 43)),
+        Prompt(prompt_type = "ASSESSMENT", criteria="Alternatives", description="Does the draft discuss other policy models or approaches? Is there a reason the chosen approach is deemed preferable?", 
+               technical_prompt="""
+               json {
+                 "criterion": "Comprehension",
+                 "score": <1‑5>,
+                 "reasoning": "<≤40 word summary>",
+                 "ref": "<Section/page cited>"
+               }
+               """,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
+    ]
+    session.add_all(prompts)
+    session.commit()
+
+
     # Seed Assessment Areas
     assessment_areas = [
-        AssessmentArea(assessment_name="Does the Draft Clearly Explain Why and What?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
-        AssessmentArea(assessment_name="Does the Draft Thoroughly Assess the Impact?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 21, 20, 20, 32)),
-        AssessmentArea(assessment_name="Does the Draft Enable Meaningful Public Participation?", description="This area evaluates how well the policy enables and encourages public feedback and participation.", created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
+        AssessmentArea(assessment_name="Does the Draft Clearly Explain Why and What?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", summary_prompt = 2, created_by="Admin", created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
+        AssessmentArea(assessment_name="Does the Draft Thoroughly Assess the Impact?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", summary_prompt = 2, created_by="Admin", created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 21, 20, 20, 32)),
+        AssessmentArea(assessment_name="Does the Draft Enable Meaningful Public Participation?", description="This area evaluates how well the policy enables and encourages public feedback and participation.", summary_prompt = 2, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
     ]
     session.add_all(assessment_areas)
     session.commit()
 
-    # Seed Prompts
-    prompts = [
-        Prompt(criteria="Justification", question="Is the need for the policy well-founded? Does the policy provide relevant context, data, or rationale for why it is needed?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 18), updated_on=datetime(2025, 6, 16, 17, 31, 18)),
-        Prompt(criteria="Essential Elements", question="Are the main objectives, provisions, or changes the policy introduces clearly stated? Does it specify what the policy aims to achieve?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 59), updated_on=datetime(2025, 6, 16, 17, 31, 59)),
-        Prompt(criteria="Comprehension", question="Is the policy text accessible, logically structured, and free of contradictions? Does it use clear language, headings, or summaries that aid understanding?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 26), updated_on=datetime(2025, 6, 16, 17, 32, 26)),
-        Prompt(criteria="Problem Identification", question="Does the policy define the root cause or specific issue it aims to address? Are challenges or market failures clearly outlined?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 32, 57), updated_on=datetime(2025, 6, 16, 17, 32, 57)),
-        Prompt(criteria="Cost-Benefit Analysis", question="Does the policy include an economic or financial appraisal of its measures? Does it weigh potential benefits against costs or risks?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 33, 43), updated_on=datetime(2025, 6, 16, 17, 33, 43)),
-        Prompt(criteria="Alternatives", question="Does the draft discuss other policy models or approaches? Is there a reason the chosen approach is deemed preferable?", created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
-    ]
-    session.add_all(prompts)
-    session.commit()
 
     # Seed Assessment Area - Prompt mappings
     assessment_prompts = [
@@ -111,9 +200,9 @@ def seed():
 
     # Document Types
     doc_types = [
-        DocumentType(doc_type_name="Consultation", description="Documents related to public or internal consultations on policy matters. updated", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 21, 20, 27, 55)),
-        DocumentType(doc_type_name="Law Order", description="Legal documents including new laws, orders, or government acts.", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 17), updated_on=datetime(2025, 6, 16, 17, 41, 17)),
-        DocumentType(doc_type_name="Amendment", description="Documents describing proposed or enacted changes to existing laws or policies.", created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 34), updated_on=datetime(2025, 6, 16, 17, 41, 34)),
+        DocumentType(doc_type_name="Consultation", description="Documents related to public or internal consultations on policy matters. updated", doc_validation_prompt = 1, created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 40, 59), updated_on=datetime(2025, 6, 21, 20, 27, 55)),
+        DocumentType(doc_type_name="Law Order", description="Legal documents including new laws, orders, or government acts.", doc_validation_prompt = 2, created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 17), updated_on=datetime(2025, 6, 16, 17, 41, 17)),
+        DocumentType(doc_type_name="Amendment", description="Documents describing proposed or enacted changes to existing laws or policies.", doc_validation_prompt = 3, created_by="admin_user", created_on=datetime(2025, 6, 16, 17, 41, 34), updated_on=datetime(2025, 6, 16, 17, 41, 34)),
     ]
     session.add_all(doc_types)
     session.commit()
