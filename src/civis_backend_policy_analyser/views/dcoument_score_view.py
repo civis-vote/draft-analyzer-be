@@ -32,6 +32,14 @@ class DocumentScoreView(BaseView):
         assessment_scores = []
         for prompt in prompt_records:
             technical_prompt = prompt.technical_prompt
+            '''
+                LLM is expected to give the response for each prompt in below format that can be converted to json
+                {
+                    "prompt_score": 2.5,
+                    "max_score": 5,
+                    "score_justfication": "sample justification"
+                }
+            '''
             llm_response = json.loads(prompt_scores[technical_prompt])
             score_record = DocumentScoreSchema(
                 doc_id = document_id,
