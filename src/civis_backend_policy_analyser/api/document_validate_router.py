@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryBaseSchema
 from civis_backend_policy_analyser.views.document_validate_view import DocumentValidateView
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
 
@@ -9,16 +10,17 @@ validate_router = APIRouter(
 )
 
 @validate_router.get(
-    "document/{document_id}/validate",
-    response_model=dict,
+    "/document/{doc_id}/document-type/{doc_type_id}/validate",
+    response_model=DocumentSummaryBaseSchema,
 )
 async def validate_document_(
-    document_id: str,
+    doc_id: str,
+    doc_type_id: int,
     db_session: DBSessionDep,
 ):
     """
     Validate a document using LLM.
     """
     document_validate_service = DocumentValidateView(db_session)
-    document_validate_response = await document_validate_service.validate_document(document_id)
+    document_validate_response = await document_validate_service.validate_document(doc_id, doc_type_id)
     return document_validate_response

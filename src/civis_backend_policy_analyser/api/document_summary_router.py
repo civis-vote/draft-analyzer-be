@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
-from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummarySchema
+from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryResponseSchema, DocumentSummarySchema
 from civis_backend_policy_analyser.views.document_summary_view import DocumentSummaryView
 
 summary_router = APIRouter(
@@ -11,18 +11,18 @@ summary_router = APIRouter(
 )
 
 @summary_router.get(
-    "/summarize/{document_id}",
-    response_model=DocumentSummarySchema,
+    "/summarize/{doc_summary_id}",
+    response_model=DocumentSummaryResponseSchema,
 )
 async def summarize_document(
-    document_id: str,
+    doc_summary_id: int,
     db_session: DBSessionDep,
 ):
     """
     Fetch document summary from llm.
     """
     document_summary_service = DocumentSummaryView(db_session)
-    document_summary = await document_summary_service.summarize_document(document_id)
+    document_summary = await document_summary_service.summarize_document(doc_summary_id)
     return document_summary
 
 
@@ -31,7 +31,7 @@ async def summarize_document(
     response_model=DocumentSummarySchema,
 )
 async def get_document_existing_summary(
-    doc_summary_id: str,
+    doc_summary_id: int,
     db_session: DBSessionDep,
 ):
     """
@@ -47,7 +47,7 @@ async def get_document_existing_summary(
     status_code=204,
 )
 async def delete_document_summary(
-    doc_summary_id: str,
+    doc_summary_id: int,
     db_session: DBSessionDep,
 ):
     """

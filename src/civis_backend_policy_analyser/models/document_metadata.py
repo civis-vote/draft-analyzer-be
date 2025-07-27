@@ -14,3 +14,7 @@ class DocumentMetadata(Base):
     upload_time = Column(DateTime, default=datetime.datetime.now())
     number_of_pages = Column(Integer)
     doc_size_kb = Column(Integer)
+
+    model_config = {
+        "from_attributes": True
+    }
