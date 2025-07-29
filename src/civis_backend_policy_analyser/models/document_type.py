@@ -13,6 +13,8 @@ class DocumentType(Base):
     doc_type_name = Column(String(255), nullable=False)
     description = Column(Text)
     doc_validation_prompt = Column(Integer, ForeignKey("prompt.prompt_id"), nullable=False)
+    doc_summary_prompt = Column(Integer, ForeignKey("prompt.prompt_id"), nullable=False)
+    doc_exec_summary_prompt = Column(Integer, ForeignKey("prompt.prompt_id"), nullable=False) 
     created_by = Column(String(100))
     created_on = Column(TIMESTAMP, default=func.now())
     updated_by = Column(String(100))
