@@ -54,6 +54,20 @@ class DocumentAgent:
     def assess(self, prompts: list[str]):
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
         return summarizer.assess(prompts)
+    
+    def validate(self, validation_prompt: str):
+        expected_format_instructions = """
+            You are a document validation assistant. Your task is to validate the documents.
+            Instructions:
+            - Return the validation result strictly in a structured JSON format as follows:
+            {
+                "is_valid_document": true/false,
+                "doc_valid_status_msg": "Your validation message here"
+            }
+            """
+        validation_prompt = expected_format_instructions + validation_prompt
+        validator = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
+        return validator.summarize(validation_prompt)
 
     def cleanup(self):
         self.vector_store.delete_all_vectors()
