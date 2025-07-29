@@ -11,5 +11,6 @@ class DocumentScore(Base):
     prompt_score = Column(Float)
     max_score = Column(Integer)
     score_justification = Column(Text)
+    reference = Column(Text)
     created_on = Column(TIMESTAMP, default=func.now())
     created_by = Column(String(100))

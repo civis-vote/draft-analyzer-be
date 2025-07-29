@@ -37,7 +37,8 @@ class DocumentScoreView(BaseView):
                 {
                     "prompt_score": 2.5,
                     "max_score": 5,
-                    "score_justfication": "sample justification"
+                    "score_justfication": "sample justification",
+                    "reference": "sample reference"
                 }
             '''
             llm_response = json.loads(prompt_scores[technical_prompt])
@@ -48,6 +49,7 @@ class DocumentScoreView(BaseView):
                 prompt_score = llm_response['prompt_score'],
                 max_score = llm_response['max_score'],
                 score_justification = llm_response['score_justification'],
+                reference = llm_response['reference'],
                 created_on = datetime.now(),
                 created_by = "Admin"  # needs to be replaced with user_id
             )
@@ -85,7 +87,8 @@ class DocumentScoreView(BaseView):
             prompt_record = PromptScore(
                 prompt_id = prompt_score.prompt_id,
                 score = prompt_score.prompt_score,
-                justification = prompt_score.score_justification
+                justification = prompt_score.score_justification,
+                reference = prompt_score.reference
             )
             prompt_records.append(prompt_record)
         # calculate score at assessment area level

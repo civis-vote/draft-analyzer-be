@@ -6,6 +6,7 @@ class PromptScore(BaseModelSchema):
     prompt_id: int
     score: float
     justification: str
+    reference: str
 
     model_config = {
         "from_attributes": True
@@ -28,6 +29,7 @@ class DocumentScoreSchema(BaseModelSchema):
     prompt_score: Optional[float] = None
     max_score: Optional[int] = None
     score_justification: Optional[str] = None
+    reference: Optional[str] = None
     created_on: Optional[datetime] = None
     created_by: Optional[str] = None
 
