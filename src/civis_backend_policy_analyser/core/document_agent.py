@@ -59,12 +59,13 @@ class DocumentAgent:
         expected_format_instructions = """
             You are a document validation assistant. Your task is to validate the documents.
             Instructions:
-            - Return the validation result in a structured JSON format.
+            - Return the validation result strictly in a structured JSON format as follows:
             {
-            "is_valid_document": "True/False",
-            "validity_checks": ["Document Type Validator Succeeded", "Content Validator Succeeded"]
+                "is_valid_document": true/false,
+                "doc_valid_status_msg": "Your validation message here"
             }
             """
+        validation_prompt = expected_format_instructions + validation_prompt
         validator = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
         return validator.summarize(validation_prompt)
 

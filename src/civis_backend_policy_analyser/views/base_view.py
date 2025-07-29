@@ -18,6 +18,20 @@ class BaseView:
         self.db_session = db_session
         self.select = select(self.model)
 
+    async def get(self, id: int):
+        try:
+            # 1 Fetch the record from the database.
+            model_obj = await self.db_session.get(self.model, id)
+
+            if not model_obj:
+                raise ValueError(f"Record with id {id} not found in table {self.model}.")
+
+            # 2 Validate and serialize the record using pydanctic model.
+            return self.schema.from_orm(model_obj)
+        except Exception as e:
+            logger.error(f'Error while fetching record with id {id} from table : {self.model}. Error: {e}')
+            raise
+
     async def all(self):
         try:
             # 1 Fetch all records from the defined SqlAlchemy Model.
@@ -82,7 +96,8 @@ class BaseView:
 
             # 2 Update the record with new data.
             for key, value in data.dict().items():
-                setattr(model_obj, key, value)
+                if value is not None:
+                    setattr(model_obj, key, value)
 
             await self.db_session.commit()
             await self.db_session.refresh(model_obj)
