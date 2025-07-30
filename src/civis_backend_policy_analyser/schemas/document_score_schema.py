@@ -2,7 +2,7 @@ from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
 from typing import List, Optional
 from datetime import datetime
 
-class PromptScore(BaseModelSchema):
+class PromptScoreSchema(BaseModelSchema):
     prompt_id: int
     score: float
     justification: str
@@ -16,7 +16,7 @@ class DocumentScoreOut(BaseModelSchema):
     assessment_id: str
     summary: str
     overall_score: float
-    prompt_scores: List[PromptScore]
+    prompt_scores: List[PromptScoreSchema]
 
     model_config = {
         "from_attributes": True
