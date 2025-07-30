@@ -1,18 +1,11 @@
-from datetime import datetime
-
 from loguru import logger
-from civis_backend_policy_analyser.core.document_agent import DocumentAgent
+from sqlalchemy import select
 from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
-from civis_backend_policy_analyser.core.embeddings.azure_embedding import AzureEmbeddingModel
-from civis_backend_policy_analyser.core.embeddings.ollama_embedding import OllamaEmbeddingModel
-from civis_backend_policy_analyser.core.llm.azure_llm import AzureLLMModel
-from civis_backend_policy_analyser.core.llm.ollama_llm import OllamaLLMModel
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
+from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryResponseSchema, DocumentSummarySchema
-from civis_backend_policy_analyser.schemas.prompt_schema import PromptSchema
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
 from civis_backend_policy_analyser.views.base_view import BaseView
-from civis_backend_policy_analyser.views.prompt_view import PromptView
 
 
 class DocumentSummaryView(BaseView):
@@ -25,8 +18,10 @@ class DocumentSummaryView(BaseView):
         if not document_summary:
             raise ValueError(f"DocumentSummary with ID {doc_summary_id} not found")
         
-        prompt_view = PromptView(self.db_session)
-        summary_prompt: PromptSchema = await prompt_view.filter(prompt_type = 'DOCUMENT_SUMMARY')[0]
+        query_result = await self.db_session.execute(
+            select(Prompt).filter(Prompt.prompt_type == 'DOCUMENT_SUMMARY')
+        )
+        summary_prompt: Prompt = query_result.scalars().first()
         if not summary_prompt:
             raise ValueError(f"Document Summary prompt not found in prompt table")
 

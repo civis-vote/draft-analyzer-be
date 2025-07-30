@@ -8,12 +8,11 @@ from typing import List
 from datetime import datetime
 from sqlalchemy import select
 from loguru import logger
-from civis_backend_policy_analyser.views.assessment_area_prompt_view import AssessmentAreaPromptView
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
+from civis_backend_policy_analyser.models.assessment_area_prompt import AssessmentAreaPrompt
 from civis_backend_policy_analyser.schemas.prompt_schema import PromptSchema
 from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import AssessmentAreaSummarySchema
-from civis_backend_policy_analyser.schemas.assessment_area_prompt_schema import AssessmentAreaPromptSchema
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
 from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
 
@@ -68,8 +67,10 @@ class DocumentScoreView(BaseView):
     
     async def fetch_score_prompts(self, assessment_id: int) -> List[PromptSchema]:
         # get prompt ids from assessment_area_prompt table (mapping table)
-        mapping_view = AssessmentAreaPromptView(self.db_session)
-        mapping_records: List[AssessmentAreaPromptSchema] = await mapping_view.filter(assessment_id=assessment_id)
+        query_result = await self.db_session.execute(
+            select(AssessmentAreaPrompt).filter(AssessmentAreaPrompt.assessment_id == assessment_id)
+        )
+        mapping_records: List[AssessmentAreaPrompt] = query_result.scalars().all()
         if not mapping_records:
             raise ValueError(f"Prompts mapped to assessment area id {assessment_id} not found")
         prompt_ids = [record.prompt_id for record in mapping_records]
