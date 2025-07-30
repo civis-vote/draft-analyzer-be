@@ -3,6 +3,7 @@ from civis_backend_policy_analyser.models.document_score import DocumentScore
 from civis_backend_policy_analyser.schemas.document_score_schema import DocumentScoreSchema, DocumentScoreOut, PromptScoreSchema
 
 import json
+import re
 from typing import List
 from datetime import datetime
 from sqlalchemy import select
@@ -48,15 +49,15 @@ class DocumentScoreView(BaseView):
                     "reference": "sample reference"
                 }
             '''
-            llm_response = json.loads(prompt_scores[technical_prompt])
+            llm_response_json = self._parse_llm_response(prompt_scores[technical_prompt])
             score_record = DocumentScore(
                 doc_id = document_id,
                 assessment_id = assessment_id,
                 prompt_id = prompt.prompt_id,
-                prompt_score = llm_response['prompt_score'],
-                max_score = llm_response['max_score'],
-                score_justification = llm_response['score_justification'],
-                reference = llm_response['reference'],
+                prompt_score = llm_response_json['prompt_score'],
+                max_score = llm_response_json['max_score'],
+                score_justification = llm_response_json['score_justification'],
+                reference = llm_response_json['reference'],
                 created_on = datetime.now(),
                 created_by = "Admin"  # needs to be replaced with user_id
             )
@@ -79,6 +80,16 @@ class DocumentScoreView(BaseView):
         prompt_objs = result.scalars().all()
         prompt_schema = PromptSchema()
         return [prompt_schema.from_orm(record) for record in prompt_objs]
+    
+    def _parse_llm_response(self, llm_response: str) -> dict:
+        """Extract JSON object from LLM markdown-wrapped response."""
+        match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", llm_response, re.DOTALL)
+        json_str = match.group(1) if match else llm_response
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse LLM response as JSON: {e}")
+            raise ValueError("Invalid LLM response format")
     
     async def format_result(
             self, 

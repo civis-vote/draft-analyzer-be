@@ -7,5 +7,5 @@ class DocumentSummarizer:
     def summarize(self, prompt):
         return self.rag_chain.run(prompt)
 
-    def assess(self, prompts):
-        return {prompt: self.rag_chain.invoke(prompt) for prompt in prompts}
+    def assess(self, prompts, expected_format_instructions=""):
+        return {prompt: self.rag_chain.invoke(expected_format_instructions + prompt) for prompt in prompts}

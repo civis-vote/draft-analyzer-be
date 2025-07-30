@@ -52,8 +52,23 @@ class DocumentAgent:
         return summarizer.summarize(summary_prompt)
 
     def assess(self, prompts: list[str]):
+        expected_format_instructions = """
+            You are a document scoring assistant. Your task is to score the document as per the provided instructions.
+            Instructions:
+            - Returns the score strictly in a structured JSON format as follows:
+            {
+                "prompt_score": 2.5,
+                "max_score": 5,
+                "score_justification": "justify your score here",
+                "reference": "part of the document you used as reference"
+            }
+            Note: 
+            1) The scores above are just a sample. You have to follow the scoring scale mentioned in the prompt.
+            2) prompt_score and max_score are numbers, score_justification and reference are strings.
+            Scoring Prompt:
+        """
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
-        return summarizer.assess(prompts)
+        return summarizer.assess(prompts, expected_format_instructions)
     
     def validate(self, validation_prompt: str):
         expected_format_instructions = """
