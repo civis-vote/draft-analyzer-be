@@ -1,8 +1,8 @@
 """Initial schema migration
 
-Revision ID: ba2202fafd53
+Revision ID: 70cab13bfe48
 Revises: 
-Create Date: 2025-07-27 18:11:49.092087
+Create Date: 2025-07-31 21:11:31.265119
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'ba2202fafd53'
+revision: str = '70cab13bfe48'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -78,16 +78,30 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('assessment_id', 'prompt_id', name='_assessment_prompt_uc')
     )
+    op.create_table('assessment_area_summary',
+    sa.Column('summary_id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('doc_id', sa.String(length=100), nullable=False),
+    sa.Column('assessment_id', sa.Integer(), nullable=False),
+    sa.Column('summary_text', sa.Text(), nullable=True),
+    sa.Column('created_on', sa.TIMESTAMP(), nullable=True),
+    sa.Column('created_by', sa.String(length=100), nullable=True),
+    sa.ForeignKeyConstraint(['assessment_id'], ['assessment_area.assessment_id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['doc_id'], ['document_metadata.doc_id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('summary_id')
+    )
     op.create_table('document_score',
     sa.Column('score_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('doc_id', sa.String(length=100), nullable=False),
     sa.Column('assessment_id', sa.Integer(), nullable=False),
     sa.Column('prompt_id', sa.Integer(), nullable=False),
-    sa.Column('assessment_json', sa.JSON(), nullable=True),
+    sa.Column('prompt_score', sa.Float(), nullable=True),
+    sa.Column('max_score', sa.Integer(), nullable=True),
+    sa.Column('score_justification', sa.Text(), nullable=True),
+    sa.Column('reference', sa.Text(), nullable=True),
     sa.Column('created_on', sa.TIMESTAMP(), nullable=True),
     sa.Column('created_by', sa.String(length=100), nullable=True),
     sa.ForeignKeyConstraint(['assessment_id'], ['assessment_area.assessment_id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['doc_id'], ['document_metadata.doc_id'], ),
+    sa.ForeignKeyConstraint(['doc_id'], ['document_metadata.doc_id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['prompt_id'], ['prompt.prompt_id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('score_id')
     )
@@ -124,6 +138,7 @@ def downgrade() -> None:
     op.drop_table('document_type_assessment_area')
     op.drop_table('document_summary')
     op.drop_table('document_score')
+    op.drop_table('assessment_area_summary')
     op.drop_table('assessment_area_prompt')
     op.drop_table('document_type')
     op.drop_table('assessment_area')
