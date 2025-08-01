@@ -169,6 +169,33 @@ def seed():
                }
                """,
                created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
+        Prompt(prompt_type = "DOCUMENT_SUMMARY", criteria="Document Summary", description="Overall document summary", 
+               technical_prompt="""
+                You are a summarization assistant. Your task is to summarize documents concisely and professionally.
+                Instructions:
+                - Only include factual, useful information from the input.
+                - Do not include phrases like "Thinking...", "Let's see", or "As an AI".
+                - Do not explain your reasoning.
+                - Keep the summary objective and direct.
+                - return result in nice presentable html format
+                Now summarize the following content:
+               """,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
+        Prompt(prompt_type = "EXECUTIVE_SUMMARY", criteria="Executive Summary", description="Executive summary of analyzed document", 
+               technical_prompt="""
+                You are an executive summary assistant. Your task is to create an executive summary from the informations provided.
+                The provided content is a detailed analysis of a document from various different aspects.
+                Instructions:
+                - Only include factual, useful information from the input.
+                - Do not include phrases like "Thinking...", "Let's see", or "As an AI".
+                - Do not explain your reasoning.
+                - Keep the summary objective and direct.
+                - return result in nice presentable html format
+                - Executive summary has to be brief and should give the reader a good idea of the analysis carried out
+                - Provide equal weightage to all the points provided in the content, do not put emphasis on just one aspect
+                Now summarize the following content:
+               """,
+               created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
     ]
     session.add_all(prompts)
     session.commit()
