@@ -11,7 +11,7 @@ from civis_backend_policy_analyser.api.assessment_area_router import assessment_
 from civis_backend_policy_analyser.api.document_type_router import document_type_router
 from civis_backend_policy_analyser.api.prompt_router import prompt_router
 from civis_backend_policy_analyser.api.document_summary_router import summary_router
-from civis_backend_policy_analyser.api.document_score import score_router
+from civis_backend_policy_analyser.api.document_score_router import score_router
 from civis_backend_policy_analyser.core.db_connection import sessionmanager
 from civis_backend_policy_analyser.api.document_validate_router import validate_router
 

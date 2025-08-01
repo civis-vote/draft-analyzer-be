@@ -38,22 +38,37 @@ class DocumentAgent:
 
     def summarize(self, summary_prompt="Summarize this document and return result in nice presentable html format"):
 
-        summary_prompt = """
-        You are a summarization assistant. Your task is to summarize documents concisely and professionally.
-            Instructions:
-            - Only include factual, useful information from the input.
-            - Do not include phrases like "Thinking...", "Let's see", or "As an AI".
-            - Do not explain your reasoning.
-            - Keep the summary objective and direct.
-            - return result in nice presentable html format
-            Now summarize the following content:
-        """
+        # summary_prompt = """
+        # You are a summarization assistant. Your task is to summarize documents concisely and professionally.
+        #     Instructions:
+        #     - Only include factual, useful information from the input.
+        #     - Do not include phrases like "Thinking...", "Let's see", or "As an AI".
+        #     - Do not explain your reasoning.
+        #     - Keep the summary objective and direct.
+        #     - return result in nice presentable html format
+        #     Now summarize the following content:
+        # """
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
         return summarizer.summarize(summary_prompt)
 
     def assess(self, prompts: list[str]):
+        expected_format_instructions = """
+            You are a document scoring assistant. Your task is to score the document as per the provided instructions.
+            Instructions:
+            - Returns the score strictly in a structured JSON format as follows:
+            {
+                "prompt_score": 2.5,
+                "max_score": 5,
+                "score_justification": "justify your score here",
+                "reference": "part of the document you used as reference"
+            }
+            Note: 
+            1) The scores above are just a sample. You have to follow the scoring scale mentioned in the prompt.
+            2) prompt_score and max_score are numbers, score_justification and reference are strings.
+            Scoring Prompt:
+        """
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
-        return summarizer.assess(prompts)
+        return summarizer.assess(prompts, expected_format_instructions)
     
     def validate(self, validation_prompt: str):
         expected_format_instructions = """
