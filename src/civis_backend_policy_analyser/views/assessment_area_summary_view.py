@@ -1,6 +1,8 @@
+from typing import List
+from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema
 from civis_backend_policy_analyser.views.base_view import BaseView
 from civis_backend_policy_analyser.models.assessment_area_summary import AssessmentAreaSummary
-from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import AssessmentAreaSummarySchema
+from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import AssessmentAreaSummaryOut, AssessmentAreaSummarySchema
 
 from datetime import datetime
 from loguru import logger
@@ -18,18 +20,20 @@ class AssessmentAreaSummaryView(BaseView):
         # fetch assessment area summary prompt
         summary_prompt = await self.fetch_summary_prompt(assessment_id)
         # fetch doc_id from document_summary table
-        document_summary: DocumentSummary = await self.db_session.get(DocumentSummary, id=doc_summary_id)
+        document_summary: DocumentSummary = await self.db_session.get(DocumentSummary, doc_summary_id)
         if not document_summary:
             raise ValueError(f"Document Summary with id {doc_summary_id} not found")
         document_id = document_summary.doc_id
         # create document agent and invoke LLM
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=document_id)
+
+        logger.info(f"started fetching summary from LLM for document id: {document_id} and assessment id: {assessment_id}")
         assessment_summary = agent.summarize(summary_prompt=summary_prompt)
         if not assessment_summary:
             raise ValueError(f"Could not summarize document {document_id} for assessment area {assessment_id}")
-        logger.info(f"started fetching summary from LLM for document id: {document_id} and assessment id: {assessment_id}")
+        
         summary_record = AssessmentAreaSummary(
-            doc_id = document_id,
+            doc_summary_id = doc_summary_id,
             assessment_id = assessment_id,
             summary_text = assessment_summary,
             created_on = datetime.now(),
@@ -41,13 +45,45 @@ class AssessmentAreaSummaryView(BaseView):
 
     async def fetch_summary_prompt(self, assessment_id: int) -> str:
         # get prompt id from summary_prompt column in assessment_area table
-        assessment_area_record: AssessmentArea = await self.db_session.get(AssessmentArea, id=assessment_id)
+        assessment_area_record: AssessmentArea = await self.db_session.get(AssessmentArea, assessment_id)
         if not assessment_area_record:
             raise ValueError(f"Assessment area with id {assessment_id} not found")
         # get prompt for that id from the prompt table
         prompt_id = assessment_area_record.summary_prompt
-        prompt_record: Prompt = await self.db_session.get(Prompt, id=prompt_id)
+        prompt_record: Prompt = await self.db_session.get(Prompt, prompt_id)
         if not prompt_record:
             raise ValueError(f"Prompt with id {prompt_id} not found")
         summary_prompt = prompt_record.technical_prompt
         return summary_prompt
+
+    async def format_result(
+            self, 
+            assessment_area_summary: AssessmentAreaSummarySchema, 
+            prompt_scores: List[PromptScoreSchema]
+        ) -> AssessmentAreaSummaryOut:
+        # variables to track total of prompt_score and max_score
+        prompt_score_total = 0
+        max_score_total = 0
+        # create a list of PromptScoreSchema objs
+        prompt_records = []
+        for prompt_score in prompt_scores:
+            prompt_score_total += prompt_score.prompt_score if prompt_score.prompt_score is not None else 0
+            max_score_total += prompt_score.max_score if prompt_score.max_score is not None else 0
+            logger.info(f"Prompt score: {prompt_score}")
+            prompt_records.append(prompt_score)
+
+        if max_score_total == 0:
+            logger.warning("Max score total is zero, setting overall score to 1.0 to avoid division by zero.")
+            max_score_total =  1
+        # calculate score at assessment area level
+        overall_score = prompt_score_total / max_score_total
+        # create obj of AssessmentAreaSummaryOut
+
+        assessment_area_analysis = AssessmentAreaSummaryOut(
+            assessment_summary_id = assessment_area_summary.assessment_summary_id,
+            assessment_id = assessment_area_summary.assessment_id,
+            summary = assessment_area_summary.summary_text,
+            overall_score = overall_score,
+            prompt_scores = prompt_records
+        )
+        return assessment_area_analysis

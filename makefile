@@ -87,7 +87,7 @@ db-psql:  ## Open psql shell
 .PHONY: db-volume-clear
 db-volume-clear: ## Warning: This will stop the DB container and remove the volume
 	docker compose down
-	docker volume rm draft-analyzer-be_pgdata || true
+	docker volume rm civis-backend-policy-analyser_pgdata || true
 	@echo "✅ Database volume cleared"
 
 ##@ Data

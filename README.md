@@ -15,7 +15,11 @@ Install `uv` (package manager + virtualenv):
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
-
+Install WeasyPrint
+WeasyPrint depends on some system libraries to render fonts, images, and CSS properly.
+```bash
+   brew install cairo pango gdk-pixbuf libffi 
+```
 ---
 
 ### 2. Clone the Repository

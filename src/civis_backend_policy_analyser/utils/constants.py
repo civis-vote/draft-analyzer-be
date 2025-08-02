@@ -35,4 +35,8 @@ AZURE_OPENAI_API_VERSION = os.environ["AZURE_OPENAI_API_VERSION"]
 
 LLM_CLIENT = os.environ.get("LLM_CLIENT", "ollama").lower()
 
+REPORTS_TEMPLATE_DIR=os.environ.get("REPORTS_TEMPLATE_DIR", "templates")
+REPORTS_OUTPUT_DIR=os.environ.get("REPORTS_OUTPUT_DIR", "reports")
+
+
 logger.info(f"All environment variables loaded successfully.")
