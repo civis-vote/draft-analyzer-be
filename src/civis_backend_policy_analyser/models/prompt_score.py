@@ -1,12 +1,11 @@
 from sqlalchemy import Column, String, Text, Integer, Float, TIMESTAMP, func, ForeignKey
 from civis_backend_policy_analyser.models.base import Base
 
-class DocumentScore(Base):
-    __tablename__ = "document_score"
+class PromptScore(Base):
+    __tablename__ = "prompt_score"
 
-    score_id = Column(Integer, primary_key=True, autoincrement=True)
-    doc_id = Column(String(100), ForeignKey('document_metadata.doc_id', ondelete='CASCADE'), nullable=False)
-    assessment_id = Column(Integer, ForeignKey('assessment_area.assessment_id', ondelete='CASCADE'), nullable=False)
+    prompt_score_id = Column(Integer, primary_key=True, autoincrement=True)
+    assessment_summary_id = Column(Integer, ForeignKey('assessment_area_summary.assessment_summary_id', ondelete='CASCADE'), nullable=False)
     prompt_id = Column(Integer, ForeignKey('prompt.prompt_id', ondelete='CASCADE'), nullable=False)
     prompt_score = Column(Float)
     max_score = Column(Integer)

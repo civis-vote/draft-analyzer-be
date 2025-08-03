@@ -8,4 +8,6 @@ class DocumentSummarizer:
         return self.rag_chain.run(prompt)
 
     def assess(self, prompts, expected_format_instructions=""):
-        return {prompt: self.rag_chain.invoke(expected_format_instructions + prompt) for prompt in prompts}
+        queries = [{"query": expected_format_instructions.strip() + "\n" + item["query"]} for item in prompts]
+        return self.rag_chain.batch(queries)
+        

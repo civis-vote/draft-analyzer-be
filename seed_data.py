@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import TIMESTAMP, Boolean, Float, create_engine, Column, Integer, String, Text, DateTime, ForeignKey, UniqueConstraint, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -74,6 +74,43 @@ class DocumentMetadata(Base):
     number_of_pages = Column(Integer)
     doc_size_kb = Column(Integer)
 
+class DocumentSummary(Base):
+    __tablename__ = "document_summary"
+
+    doc_summary_id = Column(Integer, primary_key=True, autoincrement=True)
+    doc_id = Column(String(100), ForeignKey('document_metadata.doc_id'), nullable=False)
+    doc_type_id = Column(Integer, ForeignKey('document_type.doc_type_id'), nullable=False)
+
+    is_valid_document = Column(Boolean, nullable=True)
+    doc_valid_status_msg = Column(Text, nullable=True)
+
+    summary_text = Column(Text, nullable=True)
+    created_on = Column(TIMESTAMP, default=func.now())
+    created_by = Column(String(100))
+
+
+class AssessmentAreaSummary(Base):
+    __tablename__ = "assessment_area_summary"
+
+    assessment_summary_id = Column(Integer, primary_key=True, autoincrement=True)
+    doc_summary_id = Column(Integer, ForeignKey('document_summary.doc_summary_id', ondelete='CASCADE'), nullable=False)
+    assessment_id = Column(Integer, ForeignKey('assessment_area.assessment_id', ondelete='CASCADE'), nullable=False)
+    summary_text = Column(Text)
+    created_on = Column(TIMESTAMP, default=func.now())
+    created_by = Column(String(100))
+
+class PromptScore(Base):
+    __tablename__ = "prompt_score"
+
+    prompt_score_id = Column(Integer, primary_key=True, autoincrement=True)
+    assessment_summary_id = Column(Integer, ForeignKey('assessment_area_summary.assessment_summary_id', ondelete='CASCADE'), nullable=False)
+    prompt_id = Column(Integer, ForeignKey('prompt.prompt_id', ondelete='CASCADE'), nullable=False)
+    prompt_score = Column(Float)
+    max_score = Column(Integer)
+    score_justification = Column(Text)
+    reference = Column(Text)
+    created_on = Column(TIMESTAMP, default=func.now())
+    created_by = Column(String(100))
 
 def seed():
     session = SessionLocal()
@@ -169,6 +206,18 @@ def seed():
                }
                """,
                created_by="Admin", created_on=datetime(2025, 6, 16, 17, 34, 12), updated_on=datetime(2025, 6, 16, 17, 34, 12)),
+        Prompt(prompt_type = "SUMMARY", criteria="Summary Prompt", description="",
+               technical_prompt="""
+                            You are a summarization assistant. Your task is to summarize documents concisely and professionally.
+                            Instructions:
+                            - Only include factual, useful information from the input.
+                            - Do not include phrases like "Thinking...", "Let's see", or "As an AI".
+                            - Do not explain your reasoning.
+                            - Keep the summary objective and direct.
+                            - return result in nice presentable html format
+                            Now summarize the following content:
+                """, 
+                created_by="Admin", created_on=datetime(2025, 6, 16, 17, 31, 59), updated_on=datetime(2025, 6, 16, 17, 31, 59)),
         Prompt(prompt_type = "DOCUMENT_SUMMARY", criteria="Document Summary", description="Overall document summary", 
                technical_prompt="""
                 You are a summarization assistant. Your task is to summarize documents concisely and professionally.
@@ -203,9 +252,9 @@ def seed():
 
     # Seed Assessment Areas
     assessment_areas = [
-        AssessmentArea(assessment_name="Does the Draft Clearly Explain Why and What?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", summary_prompt = 2, created_by="Admin", created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
-        AssessmentArea(assessment_name="Does the Draft Thoroughly Assess the Impact?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", summary_prompt = 2, created_by="Admin", created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 21, 20, 20, 32)),
-        AssessmentArea(assessment_name="Does the Draft Enable Meaningful Public Participation?", description="This area evaluates how well the policy enables and encourages public feedback and participation.", summary_prompt = 2, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
+        AssessmentArea(assessment_name="Does the Draft Clearly Explain Why and What?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", summary_prompt = 7, created_by="Admin", created_on=datetime(2025, 6, 16, 17, 35, 44), updated_on=datetime(2025, 6, 16, 17, 35, 44)),
+        AssessmentArea(assessment_name="Does the Draft Thoroughly Assess the Impact?", description="This area evaluates the depth and breadth of impact analysis in the policy document.", summary_prompt = 7, created_by="Admin", created_on=datetime(2025, 6, 16, 17, 36, 54), updated_on=datetime(2025, 6, 21, 20, 20, 32)),
+        AssessmentArea(assessment_name="Does the Draft Enable Meaningful Public Participation?", description="This area evaluates how well the policy enables and encourages public feedback and participation.", summary_prompt = 7, created_on=datetime(2025, 6, 21, 19, 48, 50), updated_on=datetime(2025, 6, 21, 19, 48, 50)),
     ]
     session.add_all(assessment_areas)
     session.commit()

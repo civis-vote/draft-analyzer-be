@@ -35,3 +35,6 @@ class DocumentSummaryResponseSchema(BaseModelSchema):
 class DocumentValidateLLMResponse():
     is_valid_document: bool
     doc_valid_status_msg: Optional[str] = None
+
+class DocumentReportOut(BaseModelSchema):
+    generated_report: str

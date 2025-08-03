@@ -1,0 +1,34 @@
+<div class="page-break"></div>
+
+<h1>ASSESSMENT AREA {{ area_number }}</h1>
+<h2>{{ title }}</h2>
+
+<h3>Explanation of Focus</h3>
+<p>{{ explanation }}</p>
+
+<h3>Scoring Table</h3>
+<table class="scoring-table">
+  <thead>
+    <tr>
+      <th style="width: 20%">Criterion</th>
+      <th style="width: 10%">Score</th>
+      <th style="width: 45%">Reasoning & Evidence</th>
+      <th style="width: 25%">Document Reference</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in scoring_table %}
+    <tr>
+      <td><strong>{{ row.criterion }}</strong></td>
+      <td style="text-align: center; font-weight: bold">{{ row.score }}</td>
+      <td>{{ row.reasoning }}</td>
+      <td>{{ row.reference }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="summary">
+  <strong>Summary for Assessment Area {{ area_number }}:</strong>
+  <p>{{ summary }}</p>
+</div>
