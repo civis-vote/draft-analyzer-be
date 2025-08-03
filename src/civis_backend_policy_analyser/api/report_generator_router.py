@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
 from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentReportOut
@@ -11,16 +12,30 @@ report_router = APIRouter(
 )
 
 @report_router.get(
-    "/{summary_id}",
+    "/generate/{doc_summary_id}",
     response_model=DocumentReportOut
 )
 async def generate_document_report(
-    summary_id: int,
+    doc_summary_id: int,
     db_session: DBSessionDep
 ):
     """
-    Generate a report for the document belonging to the input summary_id
+    Generate a report for the document belonging to the input doc_summary_id
     """
     report_view = DocumentReportView(db_session)
-    document_report = await report_view.generate_document_report(summary_id)
+    document_report = await report_view.generate_document_report(doc_summary_id)
     return document_report
+
+@report_router.get(
+    "/download/{doc_summary_id}",
+    response_class=FileResponse
+)
+async def download_report(doc_summary_id: int, db_session: DBSessionDep) -> FileResponse:
+    try:
+        report_view = DocumentReportView(db_session)
+
+        download_report: FileResponse = await report_view.download_report(doc_summary_id)
+        return download_report
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to download report: {str(e)}")

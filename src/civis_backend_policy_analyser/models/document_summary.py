@@ -12,6 +12,7 @@ class DocumentSummary(Base):
     doc_valid_status_msg = Column(Text, nullable=True)
 
     summary_text = Column(Text, nullable=True)
+    report_file_name = Column(String(255), nullable=True)
     created_on = Column(TIMESTAMP, default=func.now())
     created_by = Column(String(100))
 
