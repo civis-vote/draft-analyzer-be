@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from typing import List
 
 from fastapi.responses import FileResponse
@@ -123,8 +124,17 @@ class DocumentReportView(BaseView):
 
         report_file_name = document_summary.report_file_name
         if not report_file_name:
-            raise ValueError(f"No report found for doc_summary_id: {doc_summary_id}")
-        report_path = f"{REPORTS_OUTPUT_DIR}/{report_file_name}"
+            logger.info(f"No report found. Generating new report for doc_summary_id: {doc_summary_id}")
+            try:
+                report_out : DocumentReportOut = await self.generate_document_report(doc_summary_id)
+            except Exception as e:
+                logger.error(f"Error generating report file name for doc_summary_id {doc_summary_id}: {e}")
+
+        report_path = report_out.generated_report
+
+        if not os.path.exists(report_path):
+            raise FileNotFoundError(f"Report file not found at {report_path}")
+        
         return FileResponse(
                 path=str(report_path),
                 filename=f"draft_policy_report_{doc_summary_id}.pdf",
