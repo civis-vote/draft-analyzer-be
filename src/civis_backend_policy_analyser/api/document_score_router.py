@@ -14,7 +14,7 @@ score_router = APIRouter(
 )
 
 @score_router.get(
-    "/document/{doc_summary_id}/assessment/{assessment_id}",
+    "/summary/{doc_summary_id}/assessment/{assessment_id}",
     response_model=AssessmentAreaSummaryOut
 )
 async def score_assessment_area(
