@@ -1,6 +1,8 @@
 from datetime import datetime
+import os
 from typing import List
 
+from fastapi.responses import FileResponse
 from loguru import logger
 from sqlalchemy import select
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
@@ -101,9 +103,40 @@ class DocumentReportView(BaseView):
             output_dir=REPORTS_OUTPUT_DIR
         )
         request = ReportRequest(cover=CoverPageData(**cover_data), assessments=assessments)
-        report_path = generator.generate_combined_report(request=request, filename=f"policy_report_{doc_id}.pdf")
+        filename=f"policy_report_{doc_id}.pdf"
+        report_path = generator.generate_combined_report(request=request, filename=filename)
+        logger.info(f"Generated report at {report_path} for document {doc_id} with summary ID {doc_summary_id} and filename {filename}")
+
+        document_summary.report_file_name = filename
+        await self.db_session.commit()
 
         return DocumentReportOut(
             generated_report= report_path
         )
 
+    async def download_report(self, doc_summary_id: int) -> FileResponse:
+        """
+        Download the report for the document with the given summary_id
+        """
+        document_summary: DocumentSummary = await self.db_session.get(DocumentSummary, doc_summary_id)
+        if not document_summary:
+            raise ValueError(f"Invalid doc_summary_id: {doc_summary_id}")
+
+        report_file_name = document_summary.report_file_name
+        if not report_file_name:
+            logger.info(f"No report found. Generating new report for doc_summary_id: {doc_summary_id}")
+            try:
+                report_out : DocumentReportOut = await self.generate_document_report(doc_summary_id)
+            except Exception as e:
+                logger.error(f"Error generating report file name for doc_summary_id {doc_summary_id}: {e}")
+
+        report_path = report_out.generated_report
+
+        if not os.path.exists(report_path):
+            raise FileNotFoundError(f"Report file not found at {report_path}")
+        
+        return FileResponse(
+                path=str(report_path),
+                filename=f"draft_policy_report_{doc_summary_id}.pdf",
+                media_type="application/pdf"
+            )
