@@ -135,6 +135,7 @@ def seed():
                     json {
                     "criterion": "Justification",
                     "score": <1‑5>,
+                    "max_score": <1‑5>,
                     "reasoning": "<≤40 word summary>",
                     "ref": "<Section/page cited>"
                     }
@@ -161,6 +162,7 @@ def seed():
                               json {
                                 "criterion": "Essential Elements",
                                 "score": <1‑5>,
+                                "max_score": <1‑5>,
                                 "reasoning": "<≤40 word summary>",
                                 "ref": "<Section/page cited>"
                               }
@@ -171,6 +173,7 @@ def seed():
                json {
                  "criterion": "Comprehension",
                  "score": <1‑5>,
+                 "max_score": <1‑5>,
                  "reasoning": "<≤40 word summary>",
                  "ref": "<Section/page cited>"
                }
@@ -191,6 +194,7 @@ def seed():
                json {
                  "criterion": "Comprehension",
                  "score": <1‑5>,
+                 "max_score": <1‑5>,
                  "reasoning": "<≤40 word summary>",
                  "ref": "<Section/page cited>"
                }
@@ -201,6 +205,7 @@ def seed():
                json {
                  "criterion": "Comprehension",
                  "score": <1‑5>,
+                 "max_score": <1‑5>,
                  "reasoning": "<≤40 word summary>",
                  "ref": "<Section/page cited>"
                }
