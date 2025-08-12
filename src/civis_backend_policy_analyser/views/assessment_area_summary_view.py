@@ -61,17 +61,22 @@ class AssessmentAreaSummaryView(BaseView):
             assessment_area_summary: AssessmentAreaSummarySchema, 
             prompt_scores: List[PromptScoreSchema]
         ) -> AssessmentAreaSummaryOut:
-        # variables to track total of prompt_score
+        # variables to track total of prompt_score and max_score
         prompt_score_total = 0
+        max_score_total = 0
         # create a list of PromptScoreSchema objs
         prompt_records = []
         for prompt_score in prompt_scores:
             prompt_score_total += prompt_score.prompt_score if prompt_score.prompt_score is not None else 0
+            max_score_total += prompt_score.max_score if prompt_score.max_score is not None else 0
             logger.info(f"Prompt score: {prompt_score}")
             prompt_records.append(prompt_score)
 
-        # calculate score at assessment area level (simple average)
-        overall_score = prompt_score_total / len(prompt_scores)
+        if max_score_total == 0:
+            logger.warning("Max score total is zero, setting overall score to 1.0 to avoid division by zero.")
+            max_score_total =  1
+        # calculate score at assessment area level (score out of 10)
+        overall_score = (prompt_score_total / max_score_total) * 10
         # create obj of AssessmentAreaSummaryOut
 
         assessment_area_analysis = AssessmentAreaSummaryOut(
