@@ -75,8 +75,8 @@ class AssessmentAreaSummaryView(BaseView):
         if max_score_total == 0:
             logger.warning("Max score total is zero, setting overall score to 1.0 to avoid division by zero.")
             max_score_total =  1
-        # calculate score at assessment area level
-        overall_score = prompt_score_total / max_score_total
+        # calculate score at assessment area level (score out of 10)
+        overall_score = (prompt_score_total / max_score_total) * 10
         # create obj of AssessmentAreaSummaryOut
 
         assessment_area_analysis = AssessmentAreaSummaryOut(
