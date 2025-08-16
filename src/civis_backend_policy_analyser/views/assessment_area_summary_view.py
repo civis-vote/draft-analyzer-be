@@ -1,9 +1,11 @@
 from typing import List
+from civis_backend_policy_analyser.models.prompt_score import PromptScore
 from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema
 from civis_backend_policy_analyser.views.base_view import BaseView
 from civis_backend_policy_analyser.models.assessment_area_summary import AssessmentAreaSummary
 from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import AssessmentAreaSummaryOut, AssessmentAreaSummarySchema
 
+from sqlalchemy import select
 from datetime import datetime
 from loguru import logger
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
@@ -68,8 +70,7 @@ class AssessmentAreaSummaryView(BaseView):
         prompt_records = []
         for prompt_score in prompt_scores:
             prompt_score_total += prompt_score.prompt_score if prompt_score.prompt_score is not None else 0
-            max_score_total += prompt_score.max_score if prompt_score.max_score is not None else 0
-            logger.info(f"Prompt score: {prompt_score}")
+            max_score_total += prompt_score.max_score if prompt_score.max_score is not None else 5
             prompt_records.append(prompt_score)
 
         if max_score_total == 0:
@@ -77,8 +78,10 @@ class AssessmentAreaSummaryView(BaseView):
             max_score_total =  1
         # calculate score at assessment area level (score out of 10)
         overall_score = (prompt_score_total / max_score_total) * 10
-        # create obj of AssessmentAreaSummaryOut
+        
+        logger.info(f"Overall score for assessment area {assessment_area_summary.assessment_id} is {overall_score}")
 
+        # create obj of AssessmentAreaSummaryOut
         assessment_area_analysis = AssessmentAreaSummaryOut(
             assessment_summary_id = assessment_area_summary.assessment_summary_id,
             assessment_id = assessment_area_summary.assessment_id,
@@ -87,3 +90,37 @@ class AssessmentAreaSummaryView(BaseView):
             prompt_scores = prompt_records
         )
         return assessment_area_analysis
+
+    async def get_existing_assessment_area_summary(self, doc_summary_id: int, assessment_id: int) -> AssessmentAreaSummaryOut:
+        """
+        Get the existing assessment area summary for the given document and assessment id to avoid LLM call for same request.
+        """
+
+        logger.info(f"Fetching existing assessment area summary for doc_summary_id: {doc_summary_id} and assessment_id: {assessment_id}")
+
+        assessment_area_stmt = select(AssessmentAreaSummary).where(
+            AssessmentAreaSummary.doc_summary_id == doc_summary_id,
+            AssessmentAreaSummary.assessment_id == assessment_id
+        )
+        result = await self.db_session.execute(assessment_area_stmt)
+        summary = result.scalars().first()
+        if not summary:
+            return None
+
+        prompt_scores = await self.db_session.execute(
+            select(PromptScore)
+            .join(AssessmentAreaSummary, AssessmentAreaSummary.assessment_summary_id == PromptScore.assessment_summary_id)
+            .where(
+                AssessmentAreaSummary.doc_summary_id == doc_summary_id,
+                AssessmentAreaSummary.assessment_id == assessment_id
+            )
+        )
+        prompt_scores_schema = prompt_scores.scalars().all()
+        if not prompt_scores_schema:
+            logger.warning(f"No prompt scores found for doc_summary_id: {doc_summary_id} and assessment_id: {assessment_id}")
+            return None
+        
+        format_result = await self.format_result(summary, prompt_scores_schema)
+        logger.info(f"Fetched existing assessment area summary: {format_result}")
+
+        return AssessmentAreaSummaryOut.model_validate(format_result)

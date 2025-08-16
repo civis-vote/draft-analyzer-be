@@ -13,29 +13,36 @@ class DocumentSummaryView(BaseView):
     schema = DocumentSummarySchema
 
     async def summarize_document(self, doc_summary_id) -> DocumentSummaryResponseSchema:
+        logger.info(f"Fetching DocumentSummary with ID {doc_summary_id}")
+        document_summary: DocumentSummary = await self.db_session.get(self.model, doc_summary_id)
 
-        document_summary: DocumentSummary = await self.get(doc_summary_id)
         if not document_summary:
             raise ValueError(f"DocumentSummary with ID {doc_summary_id} not found")
-        
+
+        if document_summary.summary_text and document_summary.summary_text.strip():
+            logger.info(f"DocumentSummary with ID {doc_summary_id} already has a summary.")
+            return DocumentSummaryResponseSchema.model_validate(document_summary)
+
+        # fetch the document summary prompt
         query_result = await self.db_session.execute(
             select(Prompt).filter(Prompt.prompt_type == 'DOCUMENT_SUMMARY')
         )
         summary_prompt: Prompt = query_result.scalars().first()
         if not summary_prompt:
-            raise ValueError(f"Document Summary prompt not found in prompt table")
+            raise ValueError("Document Summary prompt not found in prompt table")
 
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=document_summary.doc_id)
 
-        logger.info(f"started fetching summary from LLM for document id: {document_summary.doc_id}")
+        logger.info(f"Started fetching summary from LLM for document id: {document_summary.doc_id}")
         summary = agent.summarize(summary_prompt=summary_prompt.technical_prompt)
-        logger.info(f"fetched summary from LLM: {summary}")
-        
+
         if not summary:
             raise ValueError(f"No summary found for document ID: {document_summary.doc_id}")
-        
-        # Update the document summary with the fetched summary
+
+        # update DB
         document_summary.summary_text = summary
+        self.db_session.add(document_summary)   # ensure attached
         await self.db_session.commit()
+        await self.db_session.refresh(document_summary)
 
         return DocumentSummaryResponseSchema.model_validate(document_summary)
