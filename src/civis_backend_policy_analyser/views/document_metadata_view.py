@@ -2,12 +2,7 @@ from datetime import datetime
 from fastapi import UploadFile
 from loguru import logger
 
-from civis_backend_policy_analyser.core.document_agent import DocumentAgent
 from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
-from civis_backend_policy_analyser.core.embeddings.azure_embedding import AzureEmbeddingModel
-from civis_backend_policy_analyser.core.embeddings.ollama_embedding import OllamaEmbeddingModel
-from civis_backend_policy_analyser.core.llm.azure_llm import AzureLLMModel
-from civis_backend_policy_analyser.core.llm.ollama_llm import OllamaLLMModel
 from civis_backend_policy_analyser.models.document_metadata import DocumentMetadata
 from civis_backend_policy_analyser.schemas.document_metadata_schema import DocumentMetadataOut
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT

@@ -23,3 +23,14 @@ class PromptScoreSchema(PromptScoreSchemaOut):
     model_config = {
         "from_attributes": True
     }
+
+class PromptScoreEvaluationSchema(BaseModelSchema):
+    assessment_id: Optional[int] = None
+    prompt_id: int
+    criteria: Optional[str] = None
+    prompt_score: Optional[float] = None
+    max_score: Optional[int] = 5
+
+    model_config = {
+        "from_attributes": True
+    }

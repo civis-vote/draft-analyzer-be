@@ -129,6 +129,11 @@ class DocumentReportView(BaseView):
                 report_out : DocumentReportOut = await self.generate_document_report(doc_summary_id)
             except Exception as e:
                 logger.error(f"Error generating report file name for doc_summary_id {doc_summary_id}: {e}")
+        else:
+            logger.info(f"Using existing report file name: {report_file_name}")
+            report_out : DocumentReportOut = DocumentReportOut(
+                generated_report=os.path.join(REPORTS_OUTPUT_DIR, report_file_name)
+            )
 
         report_path = report_out.generated_report
 
