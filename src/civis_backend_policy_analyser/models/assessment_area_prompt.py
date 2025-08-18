@@ -1,14 +1,6 @@
-from sqlalchemy import (
-    TIMESTAMP,
-    Column,
-    ForeignKey,
-    Integer,
-    UniqueConstraint,
-    func,
-)
-
 from civis_backend_policy_analyser.models.base import Base
-
+from sqlalchemy import Column, Integer, ForeignKey, TIMESTAMP, func, UniqueConstraint, Identity
+from sqlalchemy.orm import relationship
 
 class AssessmentAreaPrompt(Base):
     __tablename__ = 'assessment_area_prompt'

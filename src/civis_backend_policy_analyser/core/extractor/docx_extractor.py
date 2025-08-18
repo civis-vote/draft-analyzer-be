@@ -1,11 +1,8 @@
 import io
-
 from docx import Document
+from loguru import logger
 
-from civis_backend_policy_analyser.core.extractor.document_extractor import (
-    DocumentExtractor,
-)
-
+from civis_backend_policy_analyser.core.extractor.document_extractor import DocumentExtractor
 
 class DOCXExtractor(DocumentExtractor):
     def extract_text(self, file_bytes, document_id):

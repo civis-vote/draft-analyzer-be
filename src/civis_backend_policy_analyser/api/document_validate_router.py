@@ -1,12 +1,7 @@
-from fastapi import APIRouter
-
+from fastapi import APIRouter, HTTPException
+from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryBaseSchema
+from civis_backend_policy_analyser.views.document_validate_view import DocumentValidateView
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
-from civis_backend_policy_analyser.schemas.document_summary_schema import (
-    DocumentSummaryBaseSchema,
-)
-from civis_backend_policy_analyser.views.document_validate_view import (
-    DocumentValidateView,
-)
 
 validate_router = APIRouter(
     prefix='/api',

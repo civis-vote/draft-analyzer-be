@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 from fastapi import UploadFile
 
-
 class DocumentExtractor(ABC):
     @abstractmethod
     def extract_text(self, file_bytes, document_id):
@@ -10,8 +9,8 @@ class DocumentExtractor(ABC):
 
     @staticmethod
     def get_extractor(upload_file: UploadFile):
-        from .docx_extractor import DOCXExtractor
         from .pdf_extractor import PDFExtractor
+        from .docx_extractor import DOCXExtractor
         from .txt_extractor import TextExtractor
         # Add more imports as you add new extractors
 

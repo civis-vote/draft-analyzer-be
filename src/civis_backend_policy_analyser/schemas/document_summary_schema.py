@@ -1,40 +1,40 @@
-from datetime import datetime
-
 from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
+from typing import Optional
+from datetime import datetime
 
 
 class DocumentSummaryBaseSchema(BaseModelSchema):
-    doc_summary_id: int | None = None
+    doc_summary_id: Optional[int] = None
     doc_id: str
     doc_type_id: int
     is_valid_document: bool
-    doc_valid_status_msg: str | None = None
+    doc_valid_status_msg: Optional[str] = None
     
     model_config = {
         "from_attributes": True
     }
 
 class DocumentSummarySchema(DocumentSummaryBaseSchema):
-    summary_text: str | None = None
-    created_on: datetime | None = None
-    created_by: str | None = None
+    summary_text: Optional[str] = None
+    created_on: Optional[datetime] = None
+    created_by: Optional[str] = None
 
     model_config = {
         "from_attributes": True
     }
 
 class DocumentSummaryResponseSchema(BaseModelSchema):
-    doc_summary_id: int | None = None
+    doc_summary_id: Optional[int] = None
     doc_id: str
-    summary_text: str | None = None
+    summary_text: Optional[str] = None
 
     model_config = {
         "from_attributes": True
     }
 
-class DocumentValidateLLMResponse:
+class DocumentValidateLLMResponse():
     is_valid_document: bool
-    doc_valid_status_msg: str | None = None
+    doc_valid_status_msg: Optional[str] = None
 
 class DocumentReportOut(BaseModelSchema):
     generated_report: str

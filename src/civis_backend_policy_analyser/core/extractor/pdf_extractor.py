@@ -1,10 +1,7 @@
 import fitz
 from loguru import logger
 
-from civis_backend_policy_analyser.core.extractor.document_extractor import (
-    DocumentExtractor,
-)
-
+from civis_backend_policy_analyser.core.extractor.document_extractor import DocumentExtractor
 
 class PDFExtractor(DocumentExtractor):
     def extract_text(self, file_bytes, document_id):

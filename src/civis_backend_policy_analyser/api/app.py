@@ -6,17 +6,15 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from civis_backend_policy_analyser.api.assessment_area_router import (
-    assessment_area_router,
-)
-from civis_backend_policy_analyser.api.document_metadata_router import document_router
-from civis_backend_policy_analyser.api.document_score_router import score_router
-from civis_backend_policy_analyser.api.document_summary_router import summary_router
-from civis_backend_policy_analyser.api.document_type_router import document_type_router
-from civis_backend_policy_analyser.api.document_validate_router import validate_router
-from civis_backend_policy_analyser.api.prompt_router import prompt_router
 from civis_backend_policy_analyser.api.report_generator_router import report_router
+from civis_backend_policy_analyser.api.document_metadata_router import document_router
+from civis_backend_policy_analyser.api.assessment_area_router import assessment_area_router
+from civis_backend_policy_analyser.api.document_type_router import document_type_router
+from civis_backend_policy_analyser.api.prompt_router import prompt_router
+from civis_backend_policy_analyser.api.document_summary_router import summary_router
+from civis_backend_policy_analyser.api.document_score_router import score_router
 from civis_backend_policy_analyser.core.db_connection import sessionmanager
+from civis_backend_policy_analyser.api.document_validate_router import validate_router
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 

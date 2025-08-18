@@ -39,4 +39,4 @@ REPORTS_TEMPLATE_DIR=os.environ.get("REPORTS_TEMPLATE_DIR", "templates")
 REPORTS_OUTPUT_DIR=os.environ.get("REPORTS_OUTPUT_DIR", "reports")
 
 
-logger.info("All environment variables loaded successfully.")
+logger.info(f"All environment variables loaded successfully.")

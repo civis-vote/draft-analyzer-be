@@ -1,13 +1,6 @@
 from langchain_openai import AzureChatOpenAI
-
 from civis_backend_policy_analyser.core.llm.base_llm import BaseLLMModel
-from civis_backend_policy_analyser.utils.constants import (
-    AZURE_DEEPSEEK_API_KEY,
-    AZURE_DEEPSEEK_ENDPOINT,
-    AZURE_DEEPSEEK_MODEL,
-    AZURE_OPENAI_API_VERSION,
-)
-
+from civis_backend_policy_analyser.utils.constants import AZURE_DEEPSEEK_MODEL, AZURE_DEEPSEEK_API_KEY, AZURE_DEEPSEEK_ENDPOINT, AZURE_OPENAI_API_VERSION
 
 class AzureLLMModel(BaseLLMModel):
     def get_llm(self):

@@ -1,18 +1,17 @@
+from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
+from typing import Optional
 from datetime import datetime
 
-from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
-
-
 class PromptSchema(BaseModelSchema):
-    prompt_id: int | None = None
+    prompt_id: Optional[int] = None
     prompt_type: str
     criteria: str
     description: str
-    technical_prompt: str | None = None
+    technical_prompt: Optional[str] = None
     created_by: str
-    created_on: datetime | None = None
-    updated_by: str | None = None
-    updated_on: datetime | None = None
+    created_on: Optional[datetime] = None
+    updated_by: Optional[str] = None
+    updated_on: Optional[datetime] = None
 
     model_config = {
         "from_attributes": True

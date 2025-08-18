@@ -1,7 +1,5 @@
-from sqlalchemy import TIMESTAMP, Column, Float, ForeignKey, Integer, String, Text, func
-
+from sqlalchemy import Column, String, Text, Integer, Float, TIMESTAMP, func, ForeignKey
 from civis_backend_policy_analyser.models.base import Base
-
 
 class PromptScore(Base):
     __tablename__ = "prompt_score"

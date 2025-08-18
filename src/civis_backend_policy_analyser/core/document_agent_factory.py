@@ -1,15 +1,10 @@
 from enum import Enum
 
 from civis_backend_policy_analyser.core.document_agent import DocumentAgent
-from civis_backend_policy_analyser.core.embeddings.azure_embedding import (
-    AzureEmbeddingModel,
-)
-from civis_backend_policy_analyser.core.embeddings.ollama_embedding import (
-    OllamaEmbeddingModel,
-)
+from civis_backend_policy_analyser.core.embeddings.azure_embedding import AzureEmbeddingModel
+from civis_backend_policy_analyser.core.embeddings.ollama_embedding import OllamaEmbeddingModel
 from civis_backend_policy_analyser.core.llm.azure_llm import AzureLLMModel
 from civis_backend_policy_analyser.core.llm.ollama_llm import OllamaLLMModel
-
 
 class LLMClient(str, Enum):
     OLLAMA = "ollama"

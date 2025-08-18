@@ -1,16 +1,5 @@
-from sqlalchemy import (
-    TIMESTAMP,
-    Boolean,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    func,
-)
-
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text, TIMESTAMP, func
 from civis_backend_policy_analyser.models.base import Base
-
 
 class DocumentSummary(Base):
     __tablename__ = "document_summary"

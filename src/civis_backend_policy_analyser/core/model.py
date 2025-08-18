@@ -1,5 +1,4 @@
 from langchain.chains import RetrievalQA
-
 from civis_backend_policy_analyser.core.llm.base_llm import BaseLLMModel
 
 

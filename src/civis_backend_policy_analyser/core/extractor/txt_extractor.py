@@ -1,8 +1,6 @@
 import logging
 
-from civis_backend_policy_analyser.core.extractor.document_extractor import (
-    DocumentExtractor,
-)
+from civis_backend_policy_analyser.core.extractor.document_extractor import DocumentExtractor
 
 logger = logging.getLogger(__name__)
 

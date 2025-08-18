@@ -3,7 +3,6 @@ from typing import Optional
 
 from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
 
-
 class DocumentMetadataBase(BaseModelSchema):
     doc_id: str
     file_name: str
@@ -13,7 +12,7 @@ class DocumentMetadataBase(BaseModelSchema):
     doc_size_kb: int
 
 class DocumentMetadataOut(DocumentMetadataBase):
-    warning: str | None = None
+    warning: Optional[str] = None
     new_document: Optional["DocumentMetadataBase"] = None
 
 

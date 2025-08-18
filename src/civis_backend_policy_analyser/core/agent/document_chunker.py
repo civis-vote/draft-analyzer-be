@@ -1,7 +1,6 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from loguru import logger
 
-
 class DocumentChunker:
     @staticmethod
     def chunk_document(text, chunk_size=1000, chunk_overlap=150):

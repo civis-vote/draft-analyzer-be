@@ -1,12 +1,16 @@
+import os
 import tracemalloc
+from loguru import logger
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from langchain_postgres.vectorstores import PGVector
-from loguru import logger
+from langchain_openai import AzureOpenAIEmbeddings
 
-from civis_backend_policy_analyser.core.embeddings.base_embedding import (
-    BaseEmbeddingModel,
+from civis_backend_policy_analyser.core.embeddings.base_embedding import BaseEmbeddingModel
+from civis_backend_policy_analyser.utils.constants import (
+    VECTOR_CONNECTION_STRING
 )
-from civis_backend_policy_analyser.utils.constants import VECTOR_CONNECTION_STRING
+
 
 tracemalloc.start()
 

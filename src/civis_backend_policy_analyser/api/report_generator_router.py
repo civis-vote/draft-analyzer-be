@@ -2,9 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
-from civis_backend_policy_analyser.schemas.document_summary_schema import (
-    DocumentReportOut,
-)
+from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentReportOut
 from civis_backend_policy_analyser.views.document_report_view import DocumentReportView
 
 report_router = APIRouter(
