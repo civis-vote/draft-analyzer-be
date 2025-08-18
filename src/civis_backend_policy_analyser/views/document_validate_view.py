@@ -1,22 +1,22 @@
-from datetime import datetime
 import json
 import re
+from datetime import datetime
 
 from loguru import logger
-from civis_backend_policy_analyser.core.document_agent import DocumentAgent
-from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
-from civis_backend_policy_analyser.core.embeddings.azure_embedding import AzureEmbeddingModel
-from civis_backend_policy_analyser.core.embeddings.ollama_embedding import OllamaEmbeddingModel
-from civis_backend_policy_analyser.core.llm.azure_llm import AzureLLMModel
-from civis_backend_policy_analyser.core.llm.ollama_llm import OllamaLLMModel
+
+from civis_backend_policy_analyser.core.document_agent_factory import (
+    LLMClient,
+    create_document_agent,
+)
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
-from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryBaseSchema, DocumentSummarySchema, DocumentValidateLLMResponse
-from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
-from civis_backend_policy_analyser.views.base_view import BaseView
-from civis_backend_policy_analyser.models.document_metadata import DocumentMetadata
 from civis_backend_policy_analyser.models.document_type import DocumentType
 from civis_backend_policy_analyser.models.prompt import Prompt
-from sqlalchemy import text
+from civis_backend_policy_analyser.schemas.document_summary_schema import (
+    DocumentSummaryBaseSchema,
+    DocumentSummarySchema,
+)
+from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
+from civis_backend_policy_analyser.views.base_view import BaseView
 
 
 class DocumentValidateView(BaseView):

@@ -1,7 +1,13 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-from civis_backend_policy_analyser.schemas.document_metadata_schema import DocumentMetadataBase, DocumentMetadataOut
+from fastapi import APIRouter, File, HTTPException, UploadFile
+
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
-from civis_backend_policy_analyser.views.document_metadata_view import DocumentMetadataView
+from civis_backend_policy_analyser.schemas.document_metadata_schema import (
+    DocumentMetadataBase,
+    DocumentMetadataOut,
+)
+from civis_backend_policy_analyser.views.document_metadata_view import (
+    DocumentMetadataView,
+)
 
 document_router = APIRouter(
     prefix='/api',

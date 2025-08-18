@@ -1,7 +1,11 @@
-from civis_backend_policy_analyser.models.assessment_area_prompt import AssessmentAreaPrompt
-from civis_backend_policy_analyser.models.base import Base
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, Identity
+from sqlalchemy import TIMESTAMP, Column, Integer, String, Text, func
 from sqlalchemy.orm import relationship
+
+from civis_backend_policy_analyser.models.assessment_area_prompt import (
+    AssessmentAreaPrompt,
+)
+from civis_backend_policy_analyser.models.base import Base
+
 
 class Prompt(Base):
     __tablename__ = 'prompt'

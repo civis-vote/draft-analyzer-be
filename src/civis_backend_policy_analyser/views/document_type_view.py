@@ -1,14 +1,15 @@
+from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.document_type import DocumentType
 from civis_backend_policy_analyser.schemas.document_type_schema import (
     DocumentTypeCreate,
-    DocumentTypeUpdate,
     DocumentTypeOut,
+    DocumentTypeUpdate,
 )
 from civis_backend_policy_analyser.views.base_view import BaseView
-from loguru import logger
 
 
 class DocumentTypeView(BaseView):

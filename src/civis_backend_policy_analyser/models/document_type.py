@@ -1,10 +1,12 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, TIMESTAMP, func, Identity
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from civis_backend_policy_analyser.models.base import Base
-from typing import List, Optional
-from datetime import datetime
 
-from civis_backend_policy_analyser.models.document_type_assessment_area import DocumentTypeAssessmentArea
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import relationship
+
+from civis_backend_policy_analyser.models.base import Base
+from civis_backend_policy_analyser.models.document_type_assessment_area import (
+    DocumentTypeAssessmentArea,
+)
+
 
 class DocumentType(Base):
     __tablename__ = "document_type"

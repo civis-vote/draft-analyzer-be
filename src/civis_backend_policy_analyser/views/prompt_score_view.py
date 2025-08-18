@@ -1,31 +1,39 @@
-from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema
-from civis_backend_policy_analyser.views.base_view import BaseView
-from civis_backend_policy_analyser.models.prompt_score import PromptScore
-
 import json
 import re
-from typing import List, Union
 from datetime import datetime
-from sqlalchemy import select
+
 from loguru import logger
-from civis_backend_policy_analyser.models.prompt import Prompt
+from sqlalchemy import select
+
+from civis_backend_policy_analyser.core.document_agent_factory import (
+    LLMClient,
+    create_document_agent,
+)
+from civis_backend_policy_analyser.models.assessment_area_prompt import (
+    AssessmentAreaPrompt,
+)
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
-from civis_backend_policy_analyser.models.assessment_area_prompt import AssessmentAreaPrompt
+from civis_backend_policy_analyser.models.prompt import Prompt
+from civis_backend_policy_analyser.models.prompt_score import PromptScore
+from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import (
+    AssessmentAreaSummarySchema,
+)
 from civis_backend_policy_analyser.schemas.prompt_schema import PromptSchema
-from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import AssessmentAreaSummarySchema
+from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
-from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
+from civis_backend_policy_analyser.views.base_view import BaseView
+
 
 class PromptScoreView(BaseView):
     model = PromptScore
     schema = PromptScoreSchema
 
-    async def score_assessment_area(self, assessment_area_summary: AssessmentAreaSummarySchema) -> List[PromptScoreSchema]:
+    async def score_assessment_area(self, assessment_area_summary: AssessmentAreaSummarySchema) -> list[PromptScoreSchema]:
 
         assessment_summary_id = assessment_area_summary.assessment_summary_id
         assessment_id = assessment_area_summary.assessment_id
         # get the prompts associated with the current assessment_id
-        prompt_records: List[PromptSchema] = await self.fetch_score_prompts(assessment_id)
+        prompt_records: list[PromptSchema] = await self.fetch_score_prompts(assessment_id)
         prompt_list = [prompt.technical_prompt for prompt in prompt_records]
     
         # fetch doc_id from document_summary table
@@ -50,7 +58,7 @@ class PromptScoreView(BaseView):
         # parse the results from LLM
         prompt_answers = {
             item["prompt_id"]: result["result"]
-            for item, result in zip(prompt_inputs, prompt_scores_results)
+            for item, result in zip(prompt_inputs, prompt_scores_results, strict=False)
         }
 
         # store the scores in document_score table
@@ -78,7 +86,7 @@ class PromptScoreView(BaseView):
         return assessment_scores
     
 
-    async def fetch_score_prompts(self, assessment_id: int) -> List[PromptSchema]:
+    async def fetch_score_prompts(self, assessment_id: int) -> list[PromptSchema]:
         # 1. Get all prompt IDs mapped to the assessment
         result = await self.db_session.execute(
             select(AssessmentAreaPrompt.prompt_id).where(
@@ -104,7 +112,7 @@ class PromptScoreView(BaseView):
     
     # Helper method to parse LLM response
 
-    def _parse_llm_response(self, llm_response: Union[str, dict]) -> dict:
+    def _parse_llm_response(self, llm_response: str | dict) -> dict:
         """Extract JSON object from LLM markdown-wrapped response or pass through if already a dict."""
 
         if isinstance(llm_response, dict):

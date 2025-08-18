@@ -1,5 +1,7 @@
+from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.schemas.assessment_area_schema import (
@@ -8,7 +10,6 @@ from civis_backend_policy_analyser.schemas.assessment_area_schema import (
     AssessmentAreaUpdate,
 )
 from civis_backend_policy_analyser.views.base_view import BaseView
-from loguru import logger
 
 
 class AssessmentAreaView(BaseView):

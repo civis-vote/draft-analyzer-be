@@ -1,6 +1,7 @@
 import os
-from loguru import logger
+
 from jinja2 import Environment, FileSystemLoader
+from loguru import logger
 from weasyprint import HTML
 
 from civis_backend_policy_analyser.schemas.document_report_schema import ReportRequest

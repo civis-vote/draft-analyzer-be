@@ -6,15 +6,25 @@ from fastapi.responses import FileResponse
 from loguru import logger
 from sqlalchemy import select
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
-from civis_backend_policy_analyser.models.assessment_area_summary import AssessmentAreaSummary
+from civis_backend_policy_analyser.models.assessment_area_summary import (
+    AssessmentAreaSummary,
+)
 from civis_backend_policy_analyser.models.document_metadata import DocumentMetadata
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.models.prompt_score import PromptScore
 from civis_backend_policy_analyser.report.generate_report import ReportGenerator
-from civis_backend_policy_analyser.schemas.document_report_schema import CoverPageData, ReportRequest
-from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentReportOut
-from civis_backend_policy_analyser.utils.constants import REPORTS_OUTPUT_DIR, REPORTS_TEMPLATE_DIR
+from civis_backend_policy_analyser.schemas.document_report_schema import (
+    CoverPageData,
+    ReportRequest,
+)
+from civis_backend_policy_analyser.schemas.document_summary_schema import (
+    DocumentReportOut,
+)
+from civis_backend_policy_analyser.utils.constants import (
+    REPORTS_OUTPUT_DIR,
+    REPORTS_TEMPLATE_DIR,
+)
 from civis_backend_policy_analyser.views.base_view import BaseView
 
 class DocumentReportView(BaseView):

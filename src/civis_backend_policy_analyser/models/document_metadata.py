@@ -1,6 +1,6 @@
-from sqlalchemy import Column, String, DateTime, Integer
-from sqlalchemy.ext.declarative import declarative_base
 import datetime
+
+from sqlalchemy import Column, DateTime, Integer, String
 
 from civis_backend_policy_analyser.models.base import Base
 

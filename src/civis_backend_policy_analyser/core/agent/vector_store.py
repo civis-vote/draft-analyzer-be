@@ -1,5 +1,6 @@
 from civis_backend_policy_analyser.core.vector_db_store import VectorDB
 
+
 class DocumentVectorStore:
     def __init__(self, document_id, embedding_model):
         self.vector_store = VectorDB(document_id, embedding_model)

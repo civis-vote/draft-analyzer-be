@@ -1,24 +1,25 @@
 
 from datetime import datetime
-from typing import Optional
+
 from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
 
+
 class PromptScoreSchemaOut(BaseModelSchema):
-    prompt_score_id: Optional[int] = None
+    prompt_score_id: int | None = None
     assessment_summary_id: int
     prompt_id: int
-    prompt_score: Optional[float] = None
-    max_score: Optional[int] = None
-    score_justification: Optional[str] = None
-    reference: Optional[str] = None
+    prompt_score: float | None = None
+    max_score: int | None = None
+    score_justification: str | None = None
+    reference: str | None = None
 
     model_config = {
         "from_attributes": True
     }
 
 class PromptScoreSchema(PromptScoreSchemaOut):
-    created_on: Optional[datetime] = None
-    created_by: Optional[str] = None
+    created_on: datetime | None = None
+    created_by: str | None = None
 
     model_config = {
         "from_attributes": True

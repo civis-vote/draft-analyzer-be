@@ -1,8 +1,13 @@
 from fastapi import APIRouter
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
-from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryResponseSchema, DocumentSummarySchema
-from civis_backend_policy_analyser.views.document_summary_view import DocumentSummaryView
+from civis_backend_policy_analyser.schemas.document_summary_schema import (
+    DocumentSummaryResponseSchema,
+    DocumentSummarySchema,
+)
+from civis_backend_policy_analyser.views.document_summary_view import (
+    DocumentSummaryView,
+)
 
 summary_router = APIRouter(
     prefix='/api',

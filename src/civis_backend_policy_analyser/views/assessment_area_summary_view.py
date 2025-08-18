@@ -1,16 +1,25 @@
-from typing import List
-from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema
-from civis_backend_policy_analyser.views.base_view import BaseView
-from civis_backend_policy_analyser.models.assessment_area_summary import AssessmentAreaSummary
-from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import AssessmentAreaSummaryOut, AssessmentAreaSummarySchema
-
 from datetime import datetime
+
 from loguru import logger
+
+from civis_backend_policy_analyser.core.document_agent_factory import (
+    LLMClient,
+    create_document_agent,
+)
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
-from civis_backend_policy_analyser.models.prompt import Prompt
+from civis_backend_policy_analyser.models.assessment_area_summary import (
+    AssessmentAreaSummary,
+)
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
+from civis_backend_policy_analyser.models.prompt import Prompt
+from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import (
+    AssessmentAreaSummaryOut,
+    AssessmentAreaSummarySchema,
+)
+from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
-from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
+from civis_backend_policy_analyser.views.base_view import BaseView
+
 
 class AssessmentAreaSummaryView(BaseView):
     model = AssessmentAreaSummary
@@ -59,7 +68,7 @@ class AssessmentAreaSummaryView(BaseView):
     async def format_result(
             self, 
             assessment_area_summary: AssessmentAreaSummarySchema, 
-            prompt_scores: List[PromptScoreSchema]
+            prompt_scores: list[PromptScoreSchema]
         ) -> AssessmentAreaSummaryOut:
         # variables to track total of prompt_score and max_score
         prompt_score_total = 0

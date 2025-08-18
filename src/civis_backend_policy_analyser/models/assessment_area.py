@@ -1,9 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, TIMESTAMP, func
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import relationship
 
-from civis_backend_policy_analyser.models.assessment_area_prompt import AssessmentAreaPrompt
+from civis_backend_policy_analyser.models.assessment_area_prompt import (
+    AssessmentAreaPrompt,
+)
 from civis_backend_policy_analyser.models.base import Base
-from civis_backend_policy_analyser.models.document_type_assessment_area import DocumentTypeAssessmentArea
+from civis_backend_policy_analyser.models.document_type_assessment_area import (
+    DocumentTypeAssessmentArea,
+)
 
 
 class AssessmentArea(Base):

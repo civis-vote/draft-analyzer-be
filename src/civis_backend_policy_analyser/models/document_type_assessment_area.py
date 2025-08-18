@@ -1,6 +1,14 @@
+from sqlalchemy import (
+    TIMESTAMP,
+    Column,
+    ForeignKey,
+    Integer,
+    Table,
+    UniqueConstraint,
+    func,
+)
+
 from civis_backend_policy_analyser.models.base import Base
-from sqlalchemy import Column, Integer, ForeignKey, TIMESTAMP, Table, func, UniqueConstraint, Identity
-from sqlalchemy.orm import relationship
 
 DocumentTypeAssessmentArea = Table(
     'document_type_assessment_area',

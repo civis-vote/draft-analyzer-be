@@ -1,16 +1,18 @@
-from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
-from typing import List, Optional
 from datetime import datetime
 
-from civis_backend_policy_analyser.schemas.prompt_score_schema import PromptScoreSchema, PromptScoreSchemaOut
+from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
+from civis_backend_policy_analyser.schemas.prompt_score_schema import (
+    PromptScoreSchemaOut,
+)
+
 
 class AssessmentAreaSummarySchema(BaseModelSchema):
-    assessment_summary_id: Optional[int] = None
+    assessment_summary_id: int | None = None
     doc_summary_id: int
     assessment_id: int
     summary_text: str
-    created_on: Optional[datetime] = None
-    created_by: Optional[str] = None
+    created_on: datetime | None = None
+    created_by: str | None = None
 
     model_config = {
         "from_attributed": True
@@ -21,7 +23,7 @@ class AssessmentAreaSummaryOut(BaseModelSchema):
     assessment_id: int
     summary: str
     overall_score: float
-    prompt_scores: List[PromptScoreSchemaOut]
+    prompt_scores: list[PromptScoreSchemaOut]
 
     model_config = {
         "from_attributes": True

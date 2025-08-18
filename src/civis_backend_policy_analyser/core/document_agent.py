@@ -1,12 +1,17 @@
 import uuid
+
 from fastapi import UploadFile
 from loguru import logger
 
 from civis_backend_policy_analyser.core.agent.document_chunker import DocumentChunker
-from civis_backend_policy_analyser.core.extractor.document_extractor import DocumentExtractor
 from civis_backend_policy_analyser.core.agent.summarizer import DocumentSummarizer
 from civis_backend_policy_analyser.core.agent.vector_store import DocumentVectorStore
-from civis_backend_policy_analyser.core.embeddings.base_embedding import BaseEmbeddingModel
+from civis_backend_policy_analyser.core.embeddings.base_embedding import (
+    BaseEmbeddingModel,
+)
+from civis_backend_policy_analyser.core.extractor.document_extractor import (
+    DocumentExtractor,
+)
 from civis_backend_policy_analyser.core.llm.base_llm import BaseLLMModel
 from civis_backend_policy_analyser.core.model import get_rag_chain
 

@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Text, String, Integer, ForeignKey, TIMESTAMP, func
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Text, func
+
 from civis_backend_policy_analyser.models.base import Base
+
 
 class AssessmentAreaSummary(Base):
     __tablename__ = "assessment_area_summary"
