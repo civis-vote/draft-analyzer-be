@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
+from loguru import logger
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
 from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentReportOut
@@ -38,4 +39,5 @@ async def download_report(doc_summary_id: int, db_session: DBSessionDep) -> File
         return download_report
     
     except Exception as e:
+        logger.error(f"Error downloading report for doc_summary_id {doc_summary_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to download report: {str(e)}")

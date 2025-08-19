@@ -6,6 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from civis_backend_policy_analyser.api.history_router import history_router
 from civis_backend_policy_analyser.api.report_generator_router import report_router
 from civis_backend_policy_analyser.api.document_metadata_router import document_router
 from civis_backend_policy_analyser.api.assessment_area_router import assessment_area_router
@@ -60,6 +61,7 @@ app.include_router(summary_router)
 app.include_router(score_router)
 app.include_router(validate_router)
 app.include_router(report_router)
+app.include_router(history_router)
 
 
 if __name__ == '__main__':
