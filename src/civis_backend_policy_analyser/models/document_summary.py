@@ -15,4 +15,5 @@ class DocumentSummary(Base):
     report_file_name = Column(String(255), nullable=True)
     created_on = Column(TIMESTAMP, default=func.now())
     created_by = Column(String(100))
+    executive_summary_text = Column(Text, nullable=True)
 
