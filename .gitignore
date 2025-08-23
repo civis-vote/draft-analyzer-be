@@ -5,6 +5,7 @@ uv.lock
 .civis*
 *.ruff_cache*
 uploads/*
+reports/*
 build/
 dist/
 *.egg-info/

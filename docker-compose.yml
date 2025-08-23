@@ -1,17 +1,20 @@
+name: civis_local
 services:
-  postgres:
+  civis_backend:
+    container_name: civis_backend
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: civis_postgres_container
-    environment:
-      POSTGRES_PASSWORD: ffg_jpmc_civis
-      POSTGRES_USER: ffg
-      POSTGRES_DB: civis
     ports:
-      - "5432:5432"
+      - "8000:8000"
+    environment:
+      UVICORN_WORKERS: 4
+    env_file:
+      - .env              
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - civis_backend_data:/app/data
+      
 
 volumes:
-  pgdata:
+  civis_backend_data:
+    name: civis_backend_data
