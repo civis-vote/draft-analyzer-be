@@ -1,0 +1,20 @@
+name: civis_local
+
+services:
+  postgres:
+    container_name: civis_postgres_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: ffg
+      POSTGRES_PASSWORD: ffg_jpmc_civis
+      POSTGRES_DB: civis
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    name: civis_local_pgdata

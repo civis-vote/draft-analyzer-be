@@ -13,6 +13,7 @@ from civis_backend_policy_analyser.api.assessment_area_router import assessment_
 from civis_backend_policy_analyser.api.document_type_router import document_type_router
 from civis_backend_policy_analyser.api.prompt_router import prompt_router
 from civis_backend_policy_analyser.api.document_summary_router import summary_router
+from civis_backend_policy_analyser.api.executive_summary_router import executive_summary_router
 from civis_backend_policy_analyser.api.document_score_router import score_router
 from civis_backend_policy_analyser.core.db_connection import sessionmanager
 from civis_backend_policy_analyser.api.document_validate_router import validate_router
@@ -58,6 +59,7 @@ app.include_router(assessment_area_router)
 app.include_router(prompt_router)
 app.include_router(document_router)
 app.include_router(summary_router)
+app.include_router(executive_summary_router)
 app.include_router(score_router)
 app.include_router(validate_router)
 app.include_router(report_router)

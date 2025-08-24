@@ -16,6 +16,7 @@ class DocumentSummaryBaseSchema(BaseModelSchema):
 
 class DocumentSummarySchema(DocumentSummaryBaseSchema):
     summary_text: Optional[str] = None
+    executive_summary_text: Optional[str] = None
     created_on: Optional[datetime] = None
     created_by: Optional[str] = None
 

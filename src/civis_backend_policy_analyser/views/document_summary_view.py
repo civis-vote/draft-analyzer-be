@@ -2,6 +2,7 @@ from loguru import logger
 from sqlalchemy import select
 from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
+from civis_backend_policy_analyser.models.evaluation_status import EvaluationStatus
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryResponseSchema, DocumentSummarySchema
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
@@ -14,7 +15,7 @@ class DocumentSummaryView(BaseView):
 
     async def summarize_document(self, doc_summary_id) -> DocumentSummaryResponseSchema:
         logger.info(f"Fetching DocumentSummary with ID {doc_summary_id}")
-        document_summary: DocumentSummary = await self.db_session.get(self.model, doc_summary_id)
+        document_summary: DocumentSummary = await self.db_session.get(DocumentSummary, doc_summary_id)
 
         if not document_summary:
             raise ValueError(f"DocumentSummary with ID {doc_summary_id} not found")
@@ -41,7 +42,8 @@ class DocumentSummaryView(BaseView):
 
         # update DB
         document_summary.summary_text = summary
-        self.db_session.add(document_summary)   # ensure attached
+        document_summary.evaluation_status = EvaluationStatus.SUMMARIZED
+
         await self.db_session.commit()
         await self.db_session.refresh(document_summary)
 

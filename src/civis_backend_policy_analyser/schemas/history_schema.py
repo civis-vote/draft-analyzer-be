@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -7,7 +7,7 @@ class DocumentHistorySchema(BaseModel):
     doc_summary_id: int
     file_name: str
     summary_time: datetime
-    status: str
+    status: Optional[str] = None
     doc_type: str
 
     model_config = {

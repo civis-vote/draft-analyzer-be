@@ -10,6 +10,7 @@ from civis_backend_policy_analyser.core.embeddings.ollama_embedding import Ollam
 from civis_backend_policy_analyser.core.llm.azure_llm import AzureLLMModel
 from civis_backend_policy_analyser.core.llm.ollama_llm import OllamaLLMModel
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
+from civis_backend_policy_analyser.models.evaluation_status import EvaluationStatus
 from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentSummaryBaseSchema, DocumentSummarySchema, DocumentValidateLLMResponse
 from civis_backend_policy_analyser.utils.constants import LLM_CLIENT
 from civis_backend_policy_analyser.views.base_view import BaseView
@@ -52,6 +53,7 @@ class DocumentValidateView(BaseView):
             doc_type_id=doc_type_id,
             is_valid_document=is_valid_document,
             doc_valid_status_msg=doc_valid_status_msg,
+            evaluation_status=EvaluationStatus.VALIDATED,
             created_on=datetime.now(),
             created_by="Admin"  # Update this later on
         )

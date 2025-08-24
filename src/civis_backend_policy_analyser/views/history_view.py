@@ -25,6 +25,7 @@ class HistoryView(BaseView):
                 ds.doc_summary_id,
                 ds.doc_type_id,
                 ds.created_on.label("summary_time"),
+                ds.evaluation_status.label("evaluation_status"),
                 dt.doc_type_name.label("doc_type_name"),
                 dm.file_name.label("file_name")
             )
@@ -46,7 +47,7 @@ class HistoryView(BaseView):
                     doc_summary_id=row["doc_summary_id"],
                     file_name=row["file_name"],
                     summary_time=row["summary_time"],
-                    status= "completed", # TODO update this once status is updated in table
+                    status=row["evaluation_status"],
                     doc_type=row["doc_type_name"]
                 )
             )

@@ -66,19 +66,19 @@ run:  ## Run FastAPI server
 
 .PHONY: db-build
 db-build:  ## Build DB Docker container
-	docker compose build
+	docker compose -f docker/local/docker-compose.yml build
 
 .PHONY: db-up
 db-up:  ## Start DB container
-	docker compose up -d
+	docker compose -f docker/local/docker-compose.yml up -d
 
 .PHONY: db-down
 db-down:  ## Stop DB container
-	docker compose down
+	docker compose -f docker/local/docker-compose.yml down
 
 .PHONY: db-logs
 db-logs:  ## Tail DB logs
-	docker compose logs -f civis_postgres_container
+	docker compose -f docker/local/docker-compose.yml logs -f civis_postgres_container
 
 .PHONY: db-psql
 db-psql:  ## Open psql shell
@@ -86,8 +86,8 @@ db-psql:  ## Open psql shell
 
 .PHONY: db-volume-clear
 db-volume-clear: ## Warning: This will stop the DB container and remove the volume
-	docker compose down
-	docker volume rm civis-backend-policy-analyser_pgdata || true
+	docker compose -f docker/local/docker-compose.yml down
+	docker volume rm civis_local_pgdata || true
 	@echo "✅ Database volume cleared"
 
 ##@ Data

@@ -21,12 +21,13 @@ dependencies = [
     "langchain-openai>=0.1.8",
     "pgvector>=0.3.6",
     "psycopg[binary]>=3.2.9",
-    "pymupdf>=1.26.1",  
+    "pymupdf>=1.26.1",
     "python-dotenv>=1.1.0",
     "lxml>=6.0.0", # is yanked needs upgrade
     "python-docx>=1.2.0",
     "weasyprint>=60.0",
-    "jinja2>=3.0"
+    "jinja2>=3.0",
+    "beautifulsoup4>=4.13.4",
 ]
 
 [build-system]
