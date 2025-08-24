@@ -86,7 +86,7 @@ class AssessmentAreaSummaryView(BaseView):
             assessment_summary_id = assessment_area_summary.assessment_summary_id,
             assessment_id = assessment_area_summary.assessment_id,
             summary = assessment_area_summary.summary_text,
-            overall_score = overall_score,
+            overall_score = round(overall_score, 2),
             prompt_scores = prompt_records
         )
         return assessment_area_analysis
