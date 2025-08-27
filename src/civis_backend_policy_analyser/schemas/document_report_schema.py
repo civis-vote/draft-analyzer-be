@@ -3,6 +3,8 @@ from civis_backend_policy_analyser.schemas.base_model import BaseModelSchema
 from typing import List, Optional
 from datetime import datetime
 
+from civis_backend_policy_analyser.schemas.executive_summary_schema import ExecutiveSummarySchema
+
 class ReportSchema(BaseModelSchema):
     report_id: Optional[int] = None
     summary_id: int
@@ -43,6 +45,7 @@ class CoverPageData(BaseModelSchema):
     date: str
     submitted_to: str
     prepared_by: str
+    executive_summary: str
 
 
 class ReportRequest(BaseModelSchema):

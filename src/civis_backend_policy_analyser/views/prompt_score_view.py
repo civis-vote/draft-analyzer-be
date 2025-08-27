@@ -26,8 +26,7 @@ class PromptScoreView(BaseView):
         assessment_id = assessment_area_summary.assessment_id
         # get the prompts associated with the current assessment_id
         prompt_records: List[PromptSchema] = await self.fetch_score_prompts(assessment_id)
-        prompt_list = [prompt.technical_prompt for prompt in prompt_records]
-    
+
         # fetch doc_id from document_summary table
         document_summary: DocumentSummary = await self.db_session.get(DocumentSummary, assessment_area_summary.doc_summary_id)
         if not document_summary:

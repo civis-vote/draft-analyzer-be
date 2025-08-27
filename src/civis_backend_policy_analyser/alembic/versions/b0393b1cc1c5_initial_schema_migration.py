@@ -1,8 +1,8 @@
 """Initial schema migration
 
-Revision ID: 59bca9c706fe
+Revision ID: b0393b1cc1c5
 Revises: 
-Create Date: 2025-08-03 14:56:56.111257
+Create Date: 2025-08-23 23:02:19.283476
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '59bca9c706fe'
+revision: str = 'b0393b1cc1c5'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -85,6 +85,8 @@ def upgrade() -> None:
     sa.Column('is_valid_document', sa.Boolean(), nullable=True),
     sa.Column('doc_valid_status_msg', sa.Text(), nullable=True),
     sa.Column('summary_text', sa.Text(), nullable=True),
+    sa.Column('executive_summary_text', sa.Text(), nullable=True),
+    sa.Column('evaluation_status', sa.String(length=20), nullable=True),
     sa.Column('report_file_name', sa.String(length=255), nullable=True),
     sa.Column('created_on', sa.TIMESTAMP(), nullable=True),
     sa.Column('created_by', sa.String(length=100), nullable=True),

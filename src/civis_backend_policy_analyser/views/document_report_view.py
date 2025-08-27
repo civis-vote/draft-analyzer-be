@@ -9,6 +9,7 @@ from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.assessment_area_summary import AssessmentAreaSummary
 from civis_backend_policy_analyser.models.document_metadata import DocumentMetadata
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
+from civis_backend_policy_analyser.models.evaluation_status import EvaluationStatus
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.models.prompt_score import PromptScore
 from civis_backend_policy_analyser.report.generate_report import ReportGenerator
@@ -36,6 +37,8 @@ class DocumentReportView(BaseView):
         if not document_summary:
             raise ValueError(f"Invalid doc_summary_id: {doc_summary_id}")
         doc_id = document_summary.doc_id
+
+        executive_summary: str = document_summary.executive_summary_text or ""
 
         document_metadata: DocumentMetadata = await self.db_session.get(DocumentMetadata, doc_id)
         # Fetch assessment summaries for the document
@@ -95,7 +98,8 @@ class DocumentReportView(BaseView):
                 "subtitle": f"Assessment for {document_metadata.file_name}",
                 "date": datetime.now().strftime("%d %B %Y"),
                 "submitted_to": "Directorate of Industries, Government of Maharashtra",
-                "prepared_by": document_summary.created_by or "CIVIS"
+                "prepared_by": document_summary.created_by or "CIVIS",
+                "executive_summary": executive_summary
             }
 
         generator = ReportGenerator(
@@ -108,6 +112,8 @@ class DocumentReportView(BaseView):
         logger.info(f"Generated report at {report_path} for document {doc_id} with summary ID {doc_summary_id} and filename {filename}")
 
         document_summary.report_file_name = filename
+        document_summary.evaluation_status = EvaluationStatus.DOWNLOADED
+
         await self.db_session.commit()
 
         return DocumentReportOut(
