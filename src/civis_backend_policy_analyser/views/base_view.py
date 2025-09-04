@@ -1,6 +1,6 @@
 from typing import Any
 
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from sqlalchemy import select
 
 

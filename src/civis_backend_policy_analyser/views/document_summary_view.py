@@ -1,5 +1,5 @@
-from loguru import logger
 from sqlalchemy import select
+from civis_backend_policy_analyser.config.logging_config import logger
 from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
 from civis_backend_policy_analyser.models.evaluation_status import EvaluationStatus

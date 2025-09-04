@@ -1,5 +1,3 @@
-import logging
-import sys
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -17,10 +15,10 @@ from civis_backend_policy_analyser.api.executive_summary_router import executive
 from civis_backend_policy_analyser.api.document_score_router import score_router
 from civis_backend_policy_analyser.core.db_connection import sessionmanager
 from civis_backend_policy_analyser.api.document_validate_router import validate_router
+from civis_backend_policy_analyser.utils.constants import CORS_ORIGINS
+from civis_backend_policy_analyser.config.logging_config import logger
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-# sqlalchemy.url = postgresql+asyncpg://ffg:ffg_jpmc_civis@localhost:5432/civis
 
 
 @asynccontextmanager
@@ -36,21 +34,17 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, docs_url='/api/docs')
 
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173"
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Can also use ["*"] for all
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],     # Allow all HTTP methods
-    allow_headers=["*"],     # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get('/health-check')
 async def root():
+    logger.info("Health check endpoint hit")
     return {'message': 'Backend is running.'}
 
 

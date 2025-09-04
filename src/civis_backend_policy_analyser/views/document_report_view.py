@@ -3,7 +3,7 @@ import os
 from typing import List
 
 from fastapi.responses import FileResponse
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from sqlalchemy import select
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.assessment_area_summary import AssessmentAreaSummary

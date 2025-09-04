@@ -1,5 +1,5 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 class DocumentChunker:
     @staticmethod

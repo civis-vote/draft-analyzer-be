@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import aliased
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 from civis_backend_policy_analyser.models.document_metadata import DocumentMetadata
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary

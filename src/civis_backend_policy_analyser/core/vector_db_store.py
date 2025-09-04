@@ -1,6 +1,6 @@
 import os
 import tracemalloc
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from langchain_postgres.vectorstores import PGVector
