@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
 from civis_backend_policy_analyser.schemas.history_schema import DocumentHistorySchemaOut

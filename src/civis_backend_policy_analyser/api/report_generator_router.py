@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 from civis_backend_policy_analyser.core.db_connection import DBSessionDep
 from civis_backend_policy_analyser.schemas.document_summary_schema import DocumentReportOut

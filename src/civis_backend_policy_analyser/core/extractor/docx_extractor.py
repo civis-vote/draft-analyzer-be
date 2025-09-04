@@ -1,6 +1,6 @@
 import io
 from docx import Document
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 from civis_backend_policy_analyser.core.extractor.document_extractor import DocumentExtractor
 

@@ -1,5 +1,4 @@
 *__pycache__*
-uv.lock
 .venv
 .env
 .civis*
@@ -11,3 +10,4 @@ dist/
 *.egg-info/
 .DS_Store
 .idea/*
+backend/

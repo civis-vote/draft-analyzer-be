@@ -1,10 +1,18 @@
 import os
 
 from dotenv import load_dotenv
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 load_dotenv()
 
+CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*").split(",")
+
+# Logging configuration
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_PATH = os.getenv("LOG_PATH", "")
+LOG_ROTATION = os.getenv("LOG_ROTATION", "5 MB")
+LOG_RETENTION = os.getenv("LOG_RETENTION", "7 days")
+LOG_COMPRESSION = os.getenv("LOG_COMPRESSION", "zip")
 
 # Database connection strings
 DEFAULT_DRIVER = "asyncpg"

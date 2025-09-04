@@ -8,7 +8,7 @@ from civis_backend_policy_analyser.schemas.assessment_area_schema import (
     AssessmentAreaUpdate,
 )
 from civis_backend_policy_analyser.views.base_view import BaseView
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 
 
 class AssessmentAreaView(BaseView):

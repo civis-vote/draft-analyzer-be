@@ -7,7 +7,7 @@ from civis_backend_policy_analyser.schemas.assessment_area_summary_schema import
 
 from sqlalchemy import select
 from datetime import datetime
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from civis_backend_policy_analyser.models.assessment_area import AssessmentArea
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary

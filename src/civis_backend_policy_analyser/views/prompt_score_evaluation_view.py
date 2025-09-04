@@ -6,7 +6,7 @@ from civis_backend_policy_analyser.models.prompt_score import PromptScore
 from typing import List
 from sqlalchemy import select
 from sqlalchemy.orm import aliased
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from civis_backend_policy_analyser.models.prompt import Prompt
 
 class PromptScoreEvaluationView(BaseView):

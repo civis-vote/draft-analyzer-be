@@ -7,7 +7,7 @@ import re
 from typing import List, Union
 from datetime import datetime
 from sqlalchemy import select
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from civis_backend_policy_analyser.models.prompt import Prompt
 from civis_backend_policy_analyser.models.document_summary import DocumentSummary
 from civis_backend_policy_analyser.models.assessment_area_prompt import AssessmentAreaPrompt

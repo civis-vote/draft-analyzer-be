@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import re
 
-from loguru import logger
+from civis_backend_policy_analyser.config.logging_config import logger
 from civis_backend_policy_analyser.core.document_agent import DocumentAgent
 from civis_backend_policy_analyser.core.document_agent_factory import LLMClient, create_document_agent
 from civis_backend_policy_analyser.core.embeddings.azure_embedding import AzureEmbeddingModel
