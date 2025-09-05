@@ -3,6 +3,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
+from src.civis_backend_policy_analyser.utils.constants import POSTGRES_CONNECTION_STRING
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from civis_backend_policy_analyser.models.base import Base
@@ -17,6 +18,9 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+# Override sqlalchemy.url with env-based connection string
+config.set_main_option("sqlalchemy.url", POSTGRES_CONNECTION_STRING)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
