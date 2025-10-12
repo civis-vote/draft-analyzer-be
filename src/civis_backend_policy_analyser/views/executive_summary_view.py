@@ -55,7 +55,7 @@ class ExecutiveSummaryView(BaseView):
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=document_summary.doc_id)
 
         logger.info(f"started fetching summary from LLM for document id: {document_summary.doc_id}")
-        executive_summary = agent.summarize(summary_prompt=summary_prompt.technical_prompt+" "+assessment_summaries)
+        executive_summary = await agent.summarize(summary_prompt=summary_prompt.technical_prompt+" "+assessment_summaries)
         logger.info("fetched summary from LLM")
 
         if not executive_summary:

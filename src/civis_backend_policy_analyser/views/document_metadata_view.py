@@ -48,5 +48,5 @@ class DocumentMetadataView(BaseView):
         document_id = document_summary.doc_id
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=document_id)
         # Cleanup the vector store used by the agent for document id, if need to retain the vector store for future use, comment out the line below
-        agent.cleanup()
+        await agent.cleanup()
         logger.info(f"Cleaned up vector store for document id: {document_id}")

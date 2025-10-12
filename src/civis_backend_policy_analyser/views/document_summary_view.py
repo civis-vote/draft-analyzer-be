@@ -35,7 +35,7 @@ class DocumentSummaryView(BaseView):
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=document_summary.doc_id)
 
         logger.info(f"Started fetching summary from LLM for document id: {document_summary.doc_id}")
-        summary = agent.summarize(summary_prompt=summary_prompt.technical_prompt)
+        summary = await agent.summarize(summary_prompt=summary_prompt.technical_prompt)
         logger.info(f"Finished fetching summary from LLM for document id: {document_summary.doc_id}")
         if not summary:
             raise ValueError(f"No summary found for document ID: {document_summary.doc_id}")

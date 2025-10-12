@@ -31,12 +31,12 @@ class DocumentAgent:
 
         document_chunks = DocumentChunker.chunk_document(text)
         
-        self.vector_store.store_embedding(document_chunks)
+        await self.vector_store.store_embedding(document_chunks)
         logger.info("Document chunks has been embedded successfully to the vector store.")
 
         return {"document_id": self.document_id, "size_kb": size_kb, "number_of_pages": number_of_pages}
 
-    def summarize(self, summary_prompt="Summarize this document and return result in nice presentable html format"):
+    async def summarize(self, summary_prompt="Summarize this document and return result in nice presentable html format"):
 
         # summary_prompt = """
         # You are a summarization assistant. Your task is to summarize documents concisely and professionally.
@@ -49,15 +49,15 @@ class DocumentAgent:
         #     Now summarize the following content:
         # """
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
-        return summarizer.summarize(summary_prompt)
+        return await summarizer.summarize(summary_prompt)
 
-    def assess(self, prompts: list[str]):
+    async def assess(self, prompts: list[str]):
         expected_format_instructions = """
         """
         summarizer = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
-        return summarizer.assess(prompts, expected_format_instructions)
-    
-    def validate(self, validation_prompt: str):
+        return await summarizer.assess(prompts, expected_format_instructions)
+
+    async def validate(self, validation_prompt: str):
         expected_format_instructions = """
             You are a document validation assistant. Your task is to validate the documents.
             Instructions:
@@ -69,10 +69,10 @@ class DocumentAgent:
             """
         validation_prompt = expected_format_instructions + validation_prompt
         validator = DocumentSummarizer(self.vector_store.retriever, self.llm_model)
-        return validator.summarize(validation_prompt)
+        return await validator.summarize(validation_prompt)
 
-    def cleanup(self):
-        self.vector_store.delete_all_vectors()
+    async def cleanup(self):
+        await self.vector_store.delete_all_vectors()
 
     @staticmethod
     def __execution_summary_context(self, iterator_object: list, format_string: str):

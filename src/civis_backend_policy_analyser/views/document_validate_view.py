@@ -35,7 +35,7 @@ class DocumentValidateView(BaseView):
             raise ValueError(f"Validation Prompt with ID {document_type.doc_validation_prompt} not found")
 
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=doc_id)
-        llm_response = agent.validate(prompt.technical_prompt)
+        llm_response = await agent.validate(prompt.technical_prompt)
 
         if not llm_response:
             raise ValueError(f"No LLM response for validation of document ID: {doc_id}")

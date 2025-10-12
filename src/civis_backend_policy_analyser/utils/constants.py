@@ -16,7 +16,7 @@ LOG_COMPRESSION = os.getenv("LOG_COMPRESSION", "zip")
 
 # Database connection strings
 DEFAULT_DRIVER = "asyncpg"
-VECTOR_DRIVER = "psycopg"
+VECTOR_DRIVER = "asyncpg"
 
 DB_BASE_URL = (
     "postgresql+{driver_name}://{user}:{password}@{host}:{port}/{dbname}"

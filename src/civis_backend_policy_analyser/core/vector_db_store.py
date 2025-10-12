@@ -15,6 +15,10 @@ from civis_backend_policy_analyser.utils.constants import (
 
 tracemalloc.start()
 
+class PatchedPGVector(PGVector):
+    async def __apost_init__(self):
+        # Override and do nothing because you've manually created the extension
+        return  # do nothing
 
 class VectorDB:
     """
@@ -27,11 +31,14 @@ class VectorDB:
 
     def __init__(self, document_id, embedding_model: BaseEmbeddingModel):
         embedding = embedding_model.get_embedding_model()
+        engine = create_async_engine(VECTOR_CONNECTION_STRING)
         self._store = PGVector(
             embeddings=embedding,
             collection_name=f"CIVIS_DRAFT_ANALYSER_{document_id}",
-            connection=VECTOR_CONNECTION_STRING,
+            connection=engine,
+            async_mode=True,
             use_jsonb=True,
+            create_extension=False,  # tell PGVector not to auto-create extension
         )
         self.retriever = self.__get_retriever(document_id)
         self.document_id = document_id
@@ -42,7 +49,7 @@ class VectorDB:
         )
 
     @log_execution_time
-    def store_embedding(self, chunks):
+    async def store_embedding(self, chunks):
         """
         Stores text embeddings in the vector database under a document namespace.
 
@@ -55,12 +62,12 @@ class VectorDB:
         ids = [f"{self.document_id}_{i}" for i in range(len(chunks))]
         metadatas = [{"document_id": self.document_id} for _ in chunks]
         logger.info(f"{self.document_id}: Storing total {len(chunks)} embeddings with metadata.")
-        result = self._store.add_texts(texts=chunks, metadatas=metadatas, ids=ids)
+        result = await self._store.aadd_texts(texts=chunks, metadatas=metadatas, ids=ids)
         return result
     
     @log_execution_time
-    def delete_all_vectors(self):
+    async def delete_all_vectors(self):
         """
         Deletes all vectors corresponding to a document ID prefix.
         """
-        self._store.delete(filter={"document_id": self.document_id})
+        await self._store.adelete(filter={"document_id": self.document_id})

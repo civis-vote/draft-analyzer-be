@@ -4,11 +4,11 @@ class DocumentVectorStore:
     def __init__(self, document_id, embedding_model):
         self.vector_store = VectorDB(document_id, embedding_model)
 
-    def store_embedding(self, chunks):
-        self.vector_store.store_embedding(chunks)
+    async def store_embedding(self, chunks):
+        await self.vector_store.store_embedding(chunks)
 
-    def delete_all_vectors(self):
-        self.vector_store.delete_all_vectors()
+    async def delete_all_vectors(self):
+        await self.vector_store.delete_all_vectors()
 
     @property
     def retriever(self):
