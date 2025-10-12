@@ -17,4 +17,4 @@ class DocumentMetadataOut(DocumentMetadataBase):
 
 
     class Config:
-        orm_mode = True
+        from_attributes = True
