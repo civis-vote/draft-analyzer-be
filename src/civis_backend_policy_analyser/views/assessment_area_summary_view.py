@@ -30,7 +30,7 @@ class AssessmentAreaSummaryView(BaseView):
         agent = create_document_agent(client=LLMClient(LLM_CLIENT), document_id=document_id)
 
         logger.info(f"started fetching summary from LLM for document id: {document_id} and assessment id: {assessment_id}")
-        assessment_summary = agent.summarize(summary_prompt=summary_prompt)
+        assessment_summary = await agent.summarize(summary_prompt=summary_prompt)
         if not assessment_summary:
             raise ValueError(f"Could not summarize document {document_id} for assessment area {assessment_id}")
         

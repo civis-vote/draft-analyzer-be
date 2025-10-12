@@ -40,18 +40,21 @@ class PromptScoreView(BaseView):
             for prompt in prompt_records
         ]
         logger.info(f"started fetching prompt scores from LLM for document id: {document_id} and assessment_id: {assessment_id}")
-        prompt_scores_results = agent.assess(prompt_inputs)
+        prompt_scores_results = await agent.assess(prompt_inputs)
         if not prompt_scores_results:
             raise ValueError(f"Could not score prompts for document id: {document_id} under assessment id: {assessment_id}")
         
         logger.info(f"fetched prompt scores from LLM for document id: {document_id} and assessment_id: {assessment_id} - {prompt_scores_results}")
 
         # parse the results from LLM
-        prompt_answers = {
-            item["prompt_id"]: result["result"]
-            for item, result in zip(prompt_inputs, prompt_scores_results)
-        }
+        prompt_answers = {}
 
+        for item, result in zip(prompt_inputs, prompt_scores_results):
+            parsed = self._parse_llm_response(result)
+            prompt_answers[item["prompt_id"]] = parsed
+
+        logger.info(f"parsed LLM response")
+        logger.debug(f"Prompt answers: {prompt_answers}")
         # store the scores in document_score table
         assessment_scores = []
 
