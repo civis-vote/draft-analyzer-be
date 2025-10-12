@@ -41,7 +41,7 @@ class AssessmentAreaSummaryView(BaseView):
             created_on = datetime.now(),
             created_by = "Admin"  # needs to be replaced with user_id
         )
-        logger.info(f"fetched summary from LLM: {assessment_summary}")
+        logger.debug(f"fetched summary from LLM: {assessment_summary}")
         assessment_area_summary = await self.create(summary_record)
         return AssessmentAreaSummarySchema.model_validate(assessment_area_summary)
 

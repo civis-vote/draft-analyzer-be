@@ -15,6 +15,7 @@ from civis_backend_policy_analyser.api.executive_summary_router import executive
 from civis_backend_policy_analyser.api.document_score_router import score_router
 from civis_backend_policy_analyser.core.db_connection import sessionmanager
 from civis_backend_policy_analyser.api.document_validate_router import validate_router
+from civis_backend_policy_analyser.middlewares.logging_middleware import RequestLoggingMiddleware
 from civis_backend_policy_analyser.utils.constants import CORS_ORIGINS
 from civis_backend_policy_analyser.config.logging_config import logger
 
@@ -41,6 +42,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(RequestLoggingMiddleware)
 
 @app.get('/health-check')
 async def root():

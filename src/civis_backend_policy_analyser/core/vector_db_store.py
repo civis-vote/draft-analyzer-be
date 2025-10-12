@@ -7,6 +7,7 @@ from langchain_postgres.vectorstores import PGVector
 from langchain_openai import AzureOpenAIEmbeddings
 
 from civis_backend_policy_analyser.core.embeddings.base_embedding import BaseEmbeddingModel
+from civis_backend_policy_analyser.decorator.log_execution_time import log_execution_time
 from civis_backend_policy_analyser.utils.constants import (
     VECTOR_CONNECTION_STRING
 )
@@ -40,6 +41,7 @@ class VectorDB:
             search_kwargs={"k": 5, "filter": {"document_id": document_id}}
         )
 
+    @log_execution_time
     def store_embedding(self, chunks):
         """
         Stores text embeddings in the vector database under a document namespace.
@@ -55,7 +57,8 @@ class VectorDB:
         logger.info(f"{self.document_id}: Storing total {len(chunks)} embeddings with metadata.")
         result = self._store.add_texts(texts=chunks, metadatas=metadatas, ids=ids)
         return result
-
+    
+    @log_execution_time
     def delete_all_vectors(self):
         """
         Deletes all vectors corresponding to a document ID prefix.
